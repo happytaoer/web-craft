@@ -8,6 +8,7 @@ from tasks.manager import TaskManager
 from tasks.models import SpiderTask
 from config import Config
 from tasks.models import TaskStatus, TaskType
+from spiders.spider_loader import SpiderLoader
 from .models import (
     SpiderTaskRequest, SpiderResponse, 
     TaskInfo
@@ -20,6 +21,7 @@ class SpiderService:
         if tasks_dir is None:
             tasks_dir = Config.DEFAULT_TASKS_DIR
         self.task_manager = TaskManager(tasks_dir)
+        self.spider_loader = SpiderLoader()
     
     async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:
         """Create single URL crawling task"""
@@ -94,6 +96,10 @@ class SpiderService:
             task_id=task.task_id,
             error_message=task.error_message
         )
+    
+    def get_available_spiders(self) -> Dict[str, str]:
+        """Get list of available spiders"""
+        return self.spider_loader.list_spiders()
     
     def close(self) -> None:
         """Close service"""
