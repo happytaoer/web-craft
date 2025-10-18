@@ -4,15 +4,11 @@ FastAPI Application - API Server Main Program
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 import uvicorn
 import logging
 from typing import Dict, Any
-
 from api.routes import router
-from api.spider_service import SpiderService
-
 
 # Configure logging
 logging.basicConfig(
