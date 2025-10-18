@@ -2,7 +2,6 @@
 Spider Loader - Dynamically load and manage spider modules
 """
 import importlib
-import os
 from typing import Dict, Type, Optional
 from pathlib import Path
 

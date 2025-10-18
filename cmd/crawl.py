@@ -4,7 +4,6 @@ Reads tasks from tasks directory and executes spiders
 """
 import argparse
 import sys
-import json
 import time
 import asyncio
 from pathlib import Path

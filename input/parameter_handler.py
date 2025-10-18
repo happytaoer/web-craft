@@ -1,6 +1,6 @@
 """
-Input层 - 参数接收和处理模块
-负责接收和验证爬虫任务的输入参数
+Input layer - parameter receiving and processing module
+Responsible for receiving and validating spider task input parameters
 """
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs
 
 @dataclass
 class SpiderRequest:
-    """爬虫请求参数数据类"""
+    """spider request parameter data class"""
     url: str
     method: str = "GET"
     params: Optional[Dict[str, Any]] = None
@@ -20,12 +20,12 @@ class SpiderRequest:
     render_js: bool = False
     
     def __post_init__(self):
-        """初始化后的验证"""
+        """initialize validation"""
         if not self.url:
-            raise ValueError("URL不能为空")
+            raise ValueError("URL cannot be empty")
         
         if not self._is_valid_url(self.url):
-            raise ValueError(f"无效的URL: {self.url}")
+            raise ValueError(f"Invalid URL: {self.url}")
         
 
         if self.params is None:
@@ -35,7 +35,7 @@ class SpiderRequest:
             self.data = {}
     
     def _is_valid_url(self, url: str) -> bool:
-        """验证URL格式"""
+        """validate URL format"""
         try:
             result = urlparse(url)
             return all([result.scheme, result.netloc])
