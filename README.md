@@ -24,7 +24,7 @@ cd web-craft
 pip install -r requirements.txt
 
 # 3. Verify installation
-python -m tests.test_single_crawl
+python -m tests.test_ip_crawl
 ```
 
 ## 🏗️ Project Architecture
@@ -98,10 +98,7 @@ curl "http://127.0.0.1:8080/api/v1/task/{task_id}/result"
 
 ```bash
 # Verify system functionality
-python -m tests.test_single_crawl
-
-# Run complete test suite
-python -m tests.run_all_tests
+python -m tests.test_ip_crawl
 ```
 
 ## 🔧 Configuration Options
