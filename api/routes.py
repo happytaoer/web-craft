@@ -189,6 +189,33 @@ async def get_task_result(task_id: str) -> ApiResponse:
         )
 
 
+@router.get("/spiders", response_model=ApiResponse, summary="List Available Spiders")
+async def list_spiders() -> ApiResponse:
+    """
+    List all available spiders
+    
+    Returns a list of all registered spiders with their names and class names.
+    """
+    try:
+        spiders = spider_service.get_available_spiders()
+        
+        return create_api_response(
+            success=True,
+            message="Available spiders retrieved successfully",
+            data={
+                "spiders": spiders,
+                "count": len(spiders)
+            }
+        )
+        
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Failed to retrieve spiders: {str(e)}",
+            error_code="SPIDERS_LIST_ERROR"
+        )
+
+
 @router.get("/", summary="API Root Path")
 async def root() -> Dict[str, str]:
     """
