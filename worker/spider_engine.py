@@ -2,13 +2,11 @@
 Worker Layer - Spider Core Engine
 Responsible for executing actual web scraping and data extraction
 """
-import asyncio
 import time
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from bs4 import BeautifulSoup
 import aiohttp
 from fake_useragent import UserAgent
 
