@@ -57,13 +57,11 @@ web-craft/
 
 ## ✨ Core Features
 
+- 🌐 **RESTful API** - Complete Web API interface
 - 🎯 **Single URL Focus** - Efficient single webpage crawling
 - ⚡ **Asynchronous Processing** - Support for async task queues and concurrent processing
 - 🔧 **Modular Design** - Extensible spider module system
-- 📊 **Multi-format Export** - Support for JSON/CSV/Excel formats
 - 🔄 **Auto Retry** - Intelligent retry mechanism and delay control
-- 🌐 **RESTful API** - Complete Web API interface
-- 📝 **Raw Content** - Support for retrieving raw HTML content
 - 🧪 **Custom Parsing** - Users have full control over data extraction logic in parse methods
 - 🤖 **AI-Friendly** - Simple interface design makes it perfect for AI-assisted spider development
 
@@ -187,7 +185,6 @@ The framework handles all the complexity (HTTP requests, retries, async processi
 - **Backend Framework**: FastAPI, asyncio
 - **HTTP Client**: aiohttp, requests  
 - **Data Processing**: pandas, json
-- **HTML Parsing**: BeautifulSoup4, lxml
 - **Testing Framework**: Custom test suite
 - **Deployment**: Supports distributed deployment
 
