@@ -130,7 +130,6 @@ python cmd/server.py --reload --log-level DEBUG
 
 # Task executor arguments
 python cmd/crawl.py --max-tasks 10 --interval 2
-python cmd/crawl.py --once --stats
 ```
 ## 📖 API Documentation
 

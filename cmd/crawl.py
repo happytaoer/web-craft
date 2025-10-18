@@ -197,7 +197,6 @@ def main():
     parser.add_argument("--tasks-dir", default=Config.DEFAULT_TASKS_DIR, help="Task directory path")
     parser.add_argument("--max-tasks", type=int, help="Maximum number of tasks to process")
     parser.add_argument("--interval", type=float, default=5.0, help="Check interval (seconds)")
-    parser.add_argument("--once", action="store_true", help="Process existing tasks only once")
     parser.add_argument("--stats", action="store_true", help="Show task statistics")
     
     args = parser.parse_args()
@@ -212,14 +211,8 @@ def main():
         print(f"   Pending tasks: {len(pending)}")
         return
     
-    # Run worker
-    if args.once:
-        # Process existing tasks only once
-        asyncio.run(executor.run_worker(args.max_tasks, 0))
-    else:
-        # Continuously monitor and process tasks
-        asyncio.run(executor.run_worker(args.max_tasks, args.interval))
-
+    # Continuously monitor and process tasks
+    asyncio.run(executor.run_worker(args.max_tasks, args.interval))
 
 if __name__ == "__main__":
     main()
