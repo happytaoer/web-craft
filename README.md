@@ -44,8 +44,8 @@ web-craft/
 │   │   ├── base_spider.py # Base Spider Abstract Class
 │   │   └── spider_loader.py # Spider Loader
 │   └── spiders/           # User Custom Spiders
-│       ├── default_spider.py # Default General Spider
-│       └── ip_spider.py   # IP Address Spider
+│       ├── default.py # Default General Spider
+│       └── ip.py   # IP Address Spider
 ├── tests/                  # Test Suite
 ├── data/                   # Data Storage Directory
 │   └── tasks/             # Task File Storage
