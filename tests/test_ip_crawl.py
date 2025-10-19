@@ -14,7 +14,7 @@ class SingleCrawlTest(BaseTest):
         try:
             data = {
                 "url": "https://ip.me",
-                "spider_name": "ip",
+                "spider_name": "ipspider",
                 "timeout": 15,
                 "max_retries": 2
             }
