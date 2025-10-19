@@ -45,8 +45,8 @@ class SpiderLoader:
                         issubclass(attr, BaseSpider) and 
                         attr != BaseSpider):
                         
-                        # Generate spider name (remove Spider suffix and convert to lowercase)
-                        spider_name = attr_name.lower().replace('spider', '')
+                        # Generate spider name
+                        spider_name = attr_name.lower()
                         if spider_name and spider_name not in self._spiders:
                             self.register_spider(spider_name, attr)
                             
@@ -65,7 +65,7 @@ class SpiderLoader:
             raise ValueError(f"Spider class {spider_class.__name__} must inherit from BaseSpider")
         
         self._spiders[name] = spider_class
-        print(f"Registered spider: {name} -> {spider_class.__name__}")
+        print(f"Registered spider: {name}")
     
     def get_spider(self, name: str) -> Optional[BaseSpider]:
         """
