@@ -6,7 +6,6 @@ from typing import Dict, Type, Optional
 from pathlib import Path
 
 from .base_spider import BaseSpider
-from .default_spider import DefaultSpider
 
 
 class SpiderLoader:
@@ -25,28 +24,36 @@ class SpiderLoader:
     
     def _load_built_in_spiders(self):
         """Load built-in spiders"""
-        # Register default spider
-        self.register_spider('default', DefaultSpider)
+        # Try to load default spider
+        try:
+            from ..spiders.default_spider import DefaultSpider
+            self.register_spider('default', DefaultSpider)
+        except ImportError:
+            pass
         
         # Try to load news spider
         try:
-            from .news_spider import NewsSpider
+            from ..news_spider import NewsSpider
             self.register_spider('news', NewsSpider)
         except ImportError:
             pass
     
     def _discover_custom_spiders(self):
         """Automatically discover custom spiders"""
-        spiders_dir = Path(__file__).parent
+        # Look for spiders in the spiders/spiders directory
+        spiders_dir = Path(__file__).parent.parent / "spiders"
         
+        if not spiders_dir.exists():
+            return
+            
         for file_path in spiders_dir.glob("*.py"):
-            if file_path.name.startswith('_') or file_path.name in ['base_spider.py', 'spider_loader.py']:
+            if file_path.name.startswith('_'):
                 continue
             
             module_name = file_path.stem
             try:
-                # Dynamically import module
-                module = importlib.import_module(f'spiders.{module_name}')
+                # Dynamically import module from spiders.spiders package
+                module = importlib.import_module(f'spiders.spiders.{module_name}')
                 
                 # Find classes that inherit from BaseSpider
                 for attr_name in dir(module):

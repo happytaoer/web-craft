@@ -8,7 +8,7 @@ from tasks.manager import TaskManager
 from tasks.models import SpiderTask
 from config import Config
 from tasks.models import TaskStatus, TaskType
-from spiders.spider_loader import SpiderLoader
+from spiders.core.spider_loader import SpiderLoader
 from .models import (
     SpiderTaskRequest, SpiderResponse, 
     TaskInfo

@@ -40,9 +40,12 @@ web-craft/
 │   └── crawl.py           # Task Executor
 ├── tasks/                  # Task Management System
 ├── spiders/                # Spider Module System
-│   ├── base_spider.py     # Base Spider Abstract Class
-│   ├── default_spider.py  # Default General Spider
-│   └── spider_loader.py   # Spider Loader
+│   ├── core/              # Framework Core Components
+│   │   ├── base_spider.py # Base Spider Abstract Class
+│   │   └── spider_loader.py # Spider Loader
+│   └── spiders/           # User Custom Spiders
+│       ├── default_spider.py # Default General Spider
+│       └── ip_spider.py   # IP Address Spider
 ├── tests/                  # Test Suite
 ├── data/                   # Data Storage Directory
 │   └── tasks/             # Task File Storage
