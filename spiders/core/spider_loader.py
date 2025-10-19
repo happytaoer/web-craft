@@ -46,7 +46,8 @@ class SpiderLoader:
                         attr != BaseSpider):
                         
                         # Generate spider name
-                        spider_name = attr_name.lower()
+                        spider_instance = attr()
+                        spider_name = spider_instance.name 
                         if spider_name and spider_name not in self._spiders:
                             self.register_spider(spider_name, attr)
                             
