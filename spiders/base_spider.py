@@ -2,9 +2,8 @@
 Base Spider Class - Define common interfaces and behaviors for all spiders
 """
 import time
-import random
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from api.models import SpiderTaskRequest
 from worker.spider_engine import SpiderEngine
@@ -169,27 +168,3 @@ class BaseSpider(ABC):
         
         # Post processing
         return self.post_process(result)
-    
-    def get_user_agents(self) -> List[str]:
-        """
-        Get User-Agent list
-        
-        Returns:
-            User-Agent string list
-        """
-        return [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0) Gecko/20100101 Firefox/89.0'
-        ]
-    
-    def get_random_user_agent(self) -> str:
-        """
-        Get random User-Agent
-        
-        Returns:
-            Random User-Agent string
-        """
-        return random.choice(self.get_user_agents())
