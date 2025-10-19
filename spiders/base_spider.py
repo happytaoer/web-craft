@@ -100,7 +100,6 @@ class BaseSpider(ABC):
             max_retries=processed_request.max_retries,
             delay=processed_request.delay,
             use_proxy=processed_request.use_proxy,
-            render_js=processed_request.render_js
         )
         
         start_time = time.time()

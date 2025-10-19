@@ -27,8 +27,7 @@ class SpiderTaskRequest(BaseModel):
     max_retries: int = Field(default=3, ge=0, le=10, description="Maximum retry count")
     delay: float = Field(default=1.0, ge=0, le=60, description="Request delay time (seconds)")
     use_proxy: bool = Field(default=False, description="Whether to use proxy")
-    render_js: bool = Field(default=False, description="Whether to render JavaScript")
-
+    
     @validator('url')
     def validate_url(cls, v: HttpUrl) -> str:
         """Validate URL format"""
