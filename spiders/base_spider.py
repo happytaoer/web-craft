@@ -37,21 +37,6 @@ class BaseSpider(ABC):
         self.spider_engine = SpiderEngine()
         self.name = self.__class__.__name__.lower().replace('spider', '')
     
-    @abstractmethod
-    def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
-        """
-        Parse response content and extract data
-        
-        Args:
-            raw_content: Raw HTML/text content
-            url: Requested URL
-            headers: Response header information
-            
-        Returns:
-            Extracted data dictionary
-        """
-        pass
-    
     def pre_request(self, request: SpiderTaskRequest) -> SpiderTaskRequest:
         """
         Request pre-processing, can modify request parameters
@@ -63,19 +48,7 @@ class BaseSpider(ABC):
             Modified request object
         """
         return request
-    
-    def post_process(self, result: SpiderResult) -> SpiderResult:
-        """
-        Post processing, can modify crawl result
-        
-        Args:
-            result: Original crawl result
-            
-        Returns:
-            Modified crawl result
-        """
-        return result
-    
+
     async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResult:
         """
         Crawl single URL
@@ -168,3 +141,30 @@ class BaseSpider(ABC):
         
         # Post processing
         return self.post_process(result)
+    
+    @abstractmethod
+    def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
+        """
+        Parse response content and extract data
+        
+        Args:
+            raw_content: Raw HTML/text content
+            url: Requested URL
+            headers: Response header information
+            
+        Returns:
+            Extracted data dictionary
+        """
+        pass
+
+    def post_process(self, result: SpiderResult) -> SpiderResult:
+        """
+        Post processing, can modify crawl result
+        
+        Args:
+            result: Original crawl result
+            
+        Returns:
+            Modified crawl result
+        """
+        return result
