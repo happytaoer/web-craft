@@ -19,24 +19,7 @@ class SpiderLoader:
         """Initialize spider loader"""
         self._spiders: Dict[str, Type[BaseSpider]] = {}
         self._spider_instances: Dict[str, BaseSpider] = {}
-        self._load_built_in_spiders()
         self._discover_custom_spiders()
-    
-    def _load_built_in_spiders(self):
-        """Load built-in spiders"""
-        # Try to load default spider
-        try:
-            from ..spiders.default_spider import DefaultSpider
-            self.register_spider('default', DefaultSpider)
-        except ImportError:
-            pass
-        
-        # Try to load news spider
-        try:
-            from ..news_spider import NewsSpider
-            self.register_spider('news', NewsSpider)
-        except ImportError:
-            pass
     
     def _discover_custom_spiders(self):
         """Automatically discover custom spiders"""
@@ -130,7 +113,6 @@ class SpiderLoader:
         """Reload all spiders"""
         self._spiders.clear()
         self._spider_instances.clear()
-        self._load_built_in_spiders()
         self._discover_custom_spiders()
 
 
