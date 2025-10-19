@@ -2,7 +2,7 @@
 Default spider - General web page content crawling
 """
 from typing import Dict, Any
-from .base_spider import BaseSpider
+from ..core.base_spider import BaseSpider
 
 
 class DefaultSpider(BaseSpider):

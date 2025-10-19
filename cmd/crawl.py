@@ -16,7 +16,7 @@ sys.path.insert(0, str(project_root))
 from tasks.manager import TaskManager
 from tasks.models import SpiderTask, TaskStatus, TaskType
 from output.data_exporter import DataExporter
-from spiders.spider_loader import spider_loader
+from spiders.core.spider_loader import spider_loader
 from api.models import SpiderTaskRequest
 from config import Config
 
