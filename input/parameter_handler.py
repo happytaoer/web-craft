@@ -17,8 +17,7 @@ class SpiderRequest:
     max_retries: int = 3
     delay: float = 1.0
     use_proxy: bool = False
-    render_js: bool = False
-    
+
     def __post_init__(self):
         """initialize validation"""
         if not self.url:
