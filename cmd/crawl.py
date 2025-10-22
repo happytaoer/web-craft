@@ -7,7 +7,7 @@ import sys
 import time
 import asyncio
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
 # Add project root directory to Python path
 project_root = Path(__file__).parent.parent
@@ -134,16 +134,14 @@ class TaskExecutor:
             task.failed_count = 1
             return False
     
-    async def run_worker(self, max_tasks: Optional[int] = None, interval: float = 5.0):
+    async def run_worker(self, interval: float = 5.0):
         """
         Run task worker
         
         Args:
-            max_tasks: Maximum number of tasks to process, None means unlimited
             interval: Check interval (seconds)
         """
         print("🕷️ Web-Craft Task Executor Started")
-        print(f"   Max tasks: {max_tasks or 'Unlimited'}")
         print(f"   Check interval: {interval} seconds")
         print(f"   Available spiders: {list(spider_loader.list_spiders().keys())}")
         
@@ -151,10 +149,6 @@ class TaskExecutor:
         
         try:
             while True:
-                # Check if maximum task count is reached
-                if max_tasks and processed_count >= max_tasks:
-                    print(f"✅ Processed {processed_count} tasks, reached maximum limit")
-                    break
                 
                 # Get pending tasks
                 pending_tasks = self.task_manager.get_pending_tasks()
@@ -166,8 +160,6 @@ class TaskExecutor:
                 
                 # Process tasks
                 for task in pending_tasks:
-                    if max_tasks and processed_count >= max_tasks:
-                        break
                     
                     try:
                         success = await self.execute_task(task)
@@ -195,7 +187,6 @@ def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Web-Craft Task Executor")
     parser.add_argument("--tasks-dir", default=Config.DEFAULT_TASKS_DIR, help="Task directory path")
-    parser.add_argument("--max-tasks", type=int, help="Maximum number of tasks to process")
     parser.add_argument("--interval", type=float, default=5.0, help="Check interval (seconds)")
     parser.add_argument("--stats", action="store_true", help="Show task statistics")
     
@@ -212,7 +203,7 @@ def main():
         return
     
     # Continuously monitor and process tasks
-    asyncio.run(executor.run_worker(args.max_tasks, args.interval))
+    asyncio.run(executor.run_worker(args.interval))
 
 if __name__ == "__main__":
     main()
