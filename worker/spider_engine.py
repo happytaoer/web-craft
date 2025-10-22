@@ -28,7 +28,7 @@ class SpiderResponse:
 
 class SpiderEngine:
     """Spider Engine"""
-    
+
     def __init__(self):
         self.ua = UserAgent()
     
@@ -37,7 +37,7 @@ class SpiderEngine:
         """Asynchronous web scraping"""
         try:
             # Prepare request parameters - use default headers
-            headers = Config.DEFAULT_HEADERS.copy()
+            headers = {}
             headers['User-Agent'] = self.ua.random
             
             timeout = aiohttp.ClientTimeout(total=request.timeout)
