@@ -66,7 +66,6 @@ class SpiderLoader:
             raise ValueError(f"Spider class {spider_class.__name__} must inherit from BaseSpider")
         
         self._spiders[name] = spider_class
-        print(f"Registered spider: {name}")
     
     def get_spider(self, name: str) -> Optional[BaseSpider]:
         """
