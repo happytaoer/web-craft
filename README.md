@@ -129,7 +129,7 @@ python cmd/server.py --reload --log-level DEBUG
 # Task executor arguments
 python cmd/crawl.py
 python cmd/crawl.py --interval 2
-python cmd/crawl.py --tasks-dir data/tasks --interval 2 --stats
+python cmd/crawl.py --interval 2 --stats
 ```
 ## 📖 API Documentation
 
