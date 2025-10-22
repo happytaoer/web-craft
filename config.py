@@ -1,17 +1,11 @@
 """
 Configuration File - Global configuration for spider system
 """
-import os
-from typing import Dict, List
-
-
 class Config:
     """Spider system configuration class"""
     
     # Basic configuration
     DEFAULT_TIMEOUT = 30
-    DEFAULT_RETRY_COUNT = 3
-    DEFAULT_DELAY = 1.0
     
     # Task configuration
     DEFAULT_TASKS_DIR = "data/tasks"
@@ -26,28 +20,5 @@ class Config:
         'Upgrade-Insecure-Requests': '1',
     }
     
-    # Proxy configuration
-    PROXY_ENABLED = False
-    PROXY_LIST = [
-        # 'http://proxy1:port',
-        # 'http://proxy2:port',
-    ]
-    
     # Concurrency configuration
     MAX_CONCURRENT_REQUESTS = 10
-    
-    # Logging configuration
-    LOG_LEVEL = "INFO"
-    LOG_FILE = "spider.log"
-    
-    # Database configuration (optional)
-    DATABASE_URL = os.getenv('DATABASE_URL', '')
-    
-    # Cache configuration
-    CACHE_ENABLED = False
-    CACHE_DIR = "cache"
-    CACHE_EXPIRE_HOURS = 24
-    
-    # Security configuration
-    RESPECT_ROBOTS_TXT = True
-    MIN_REQUEST_INTERVAL = 0.5  # Minimum request interval (seconds)
