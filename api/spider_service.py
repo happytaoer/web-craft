@@ -17,10 +17,8 @@ from .models import (
 class SpiderService:
     """Spider Service Class - Now only responsible for creating tasks, does not directly execute crawling"""
     
-    def __init__(self, tasks_dir: str = None) -> None:
-        if tasks_dir is None:
-            tasks_dir = Config.DEFAULT_TASKS_DIR
-        self.task_manager = TaskManager(tasks_dir)
+    def __init__(self) -> None:
+        self.task_manager = TaskManager(Config.DEFAULT_TASKS_DIR)
         self.spider_loader = SpiderLoader()
     
     async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:

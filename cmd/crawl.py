@@ -24,11 +24,9 @@ from config import Config
 class TaskExecutor:
     """Task executor"""
     
-    def __init__(self, tasks_dir: str = None):
+    def __init__(self):
         """Initialize task executor"""
-        if tasks_dir is None:
-            tasks_dir = Config.DEFAULT_TASKS_DIR
-        self.task_manager = TaskManager(tasks_dir)
+        self.task_manager = TaskManager(Config.DEFAULT_TASKS_DIR)
         self.data_exporter = DataExporter()
     
     async def execute_task(self, task: SpiderTask) -> bool:
@@ -186,14 +184,13 @@ class TaskExecutor:
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Web-Craft Task Executor")
-    parser.add_argument("--tasks-dir", default=Config.DEFAULT_TASKS_DIR, help="Task directory path")
     parser.add_argument("--interval", type=float, default=5.0, help="Check interval (seconds)")
     parser.add_argument("--stats", action="store_true", help="Show task statistics")
     
     args = parser.parse_args()
     
     # Create task executor
-    executor = TaskExecutor(args.tasks_dir)
+    executor = TaskExecutor()
     
     # Show task statistics
     if args.stats:
