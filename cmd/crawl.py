@@ -18,7 +18,7 @@ from tasks.models import SpiderTask, TaskStatus, TaskType
 from output.data_exporter import DataExporter
 from spiders.core.spider_loader import spider_loader
 from api.models import SpiderTaskRequest
-from config import Config
+from config import config
 
 
 class TaskExecutor:
@@ -26,7 +26,7 @@ class TaskExecutor:
     
     def __init__(self):
         """Initialize task executor"""
-        self.task_manager = TaskManager(Config.DEFAULT_TASKS_DIR)
+        self.task_manager = TaskManager(config.tasks.tasks_dir)
         self.data_exporter = DataExporter()
     
     async def execute_task(self, task: SpiderTask) -> bool:

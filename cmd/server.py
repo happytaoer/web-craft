@@ -14,7 +14,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from api.app import run_server
-from config import Config
+from config import config
 
 
 def setup_logging(log_level: str, log_file: Optional[str] = None) -> None:
@@ -137,7 +137,7 @@ Example usage:
     app_group.add_argument(
         '--timeout', 
         type=int,
-        help=f'Default request timeout in seconds (default: {Config.DEFAULT_TIMEOUT})'
+        help=f'Default request timeout in seconds (default: {config.spider.timeout})'
     )
     
     # Security configuration
@@ -235,12 +235,12 @@ def main() -> None:
         # Setup logging
         setup_logging(args.log_level, args.log_file)
         
-        # Apply configuration to global Config
+        # Apply configuration to global config
         if args.timeout:
-            Config.DEFAULT_TIMEOUT = args.timeout
+            config.spider.timeout = args.timeout
         
         if args.max_requests:
-            Config.MAX_CONCURRENT_REQUESTS = args.max_requests
+            config.concurrency.max_concurrent_requests = args.max_requests
         
         # Check configuration mode
         if args.check_config:

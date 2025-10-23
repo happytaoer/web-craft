@@ -1,0 +1,27 @@
+# Web-Craft Spider System Configuration Example
+# Copy this file to config.toml and modify as needed
+
+[spider]
+# Spider basic configuration
+timeout = 30        # Default request timeout (seconds)
+max_retries = 3     # Default maximum retry count
+delay = 1.0         # Default request delay (seconds)
+
+[tasks]
+# Task management configuration
+tasks_dir = "data/tasks"  # Task storage directory
+
+[concurrency]
+# Concurrency control configuration
+max_concurrent_requests = 10  # Maximum concurrent requests
+
+[server]
+# API server configuration
+host = "127.0.0.1"  # Server host address
+port = 8000         # Server port
+workers = 1         # Number of worker processes
+
+[logging]
+# Logging configuration
+level = "INFO"      # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
