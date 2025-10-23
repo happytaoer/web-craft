@@ -6,7 +6,7 @@ from datetime import datetime
 
 from tasks.manager import TaskManager
 from tasks.models import SpiderTask
-from config import Config
+from config import config
 from tasks.models import TaskStatus, TaskType
 from spiders.core.spider_loader import SpiderLoader
 from .models import (
@@ -18,7 +18,7 @@ class SpiderService:
     """Spider Service Class - Now only responsible for creating tasks, does not directly execute crawling"""
     
     def __init__(self) -> None:
-        self.task_manager = TaskManager(Config.DEFAULT_TASKS_DIR)
+        self.task_manager = TaskManager(config.tasks.tasks_dir)
         self.spider_loader = SpiderLoader()
     
     async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:

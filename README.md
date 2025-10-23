@@ -23,7 +23,11 @@ cd web-craft
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Verify installation
+# 3. Setup configuration
+cp config.example.toml config.toml
+# Edit config.toml to customize settings
+
+# 4. Verify installation
 python -m tests.test_ip_crawl
 ```
 
@@ -53,7 +57,9 @@ web-craft/
 │       ├── running/       # Running Tasks
 │       ├── completed/     # Completed Tasks
 │       └── failed/        # Failed Tasks
-├── config.py               # Configuration File
+├── config.py               # Configuration Module
+├── config.toml             # Configuration File (user-specific, not in git)
+├── config.example.toml     # Configuration Example Template
 ├── requirements.txt        # Dependencies
 └── README.md              # Project Documentation
 ```
@@ -104,19 +110,58 @@ python -m tests.test_ip_crawl
 
 ## 🔧 Configuration Options
 
-### Basic Configuration (config.py)
+### Configuration File (config.toml)
+
+Web-Craft uses TOML format for configuration management, following Python best practices.
+
+**Setup**: Copy `config.example.toml` to `config.toml` and customize as needed:
+```bash
+cp config.example.toml config.toml
+```
+
+**Note**: `config.toml` is user-specific and should not be committed to version control (add to `.gitignore`).
+
+```toml
+[spider]
+# Spider configuration
+timeout = 30        # Request timeout (seconds)
+max_retries = 3     # Maximum retry count
+delay = 1.0         # Request delay (seconds)
+
+[tasks]
+# Task management configuration
+tasks_dir = "data/tasks"  # Task storage directory
+
+[concurrency]
+# Concurrency control configuration
+max_concurrent_requests = 10  # Maximum concurrent requests
+
+[server]
+# API server configuration
+host = "127.0.0.1"
+port = 8000
+workers = 1
+
+[logging]
+# Logging configuration
+level = "INFO"
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+```
+
+### Using Configuration in Code
 
 ```python
-# Request Configuration
-DEFAULT_TIMEOUT = 30          # Request timeout (seconds)
-DEFAULT_RETRY_COUNT = 3       # Default retry count
-DEFAULT_DELAY = 1.0           # Request interval (seconds)
+from config import config
 
-DEFAULT_TASKS_DIR = "data/tasks"      # Task directory
+# Access configuration
+timeout = config.spider.timeout
+max_retries = config.spider.max_retries
+tasks_dir = config.tasks.tasks_dir
+max_concurrent = config.concurrency.max_concurrent_requests
 
-# API Configuration
-API_HOST = "127.0.0.1"        # API host
-API_PORT = 8000               # API port
+# Modify configuration at runtime
+config.spider.timeout = 60
+config.concurrency.max_concurrent_requests = 20
 ```
 
 ### Command Line Arguments
@@ -125,6 +170,7 @@ API_PORT = 8000               # API port
 # API server arguments
 python cmd/server.py --port 8080 --host 0.0.0.0
 python cmd/server.py --reload --log-level DEBUG
+python cmd/server.py --timeout 60 --max-requests 20
 
 # Task executor arguments
 python cmd/crawl.py

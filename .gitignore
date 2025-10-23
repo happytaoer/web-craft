@@ -202,6 +202,9 @@ geckodriver
 secrets.json
 config.local.py
 
+# User-specific configuration
+config.toml
+
 # Database files
 *.db
 *.sqlite

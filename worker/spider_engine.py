@@ -8,7 +8,7 @@ import aiohttp
 from fake_useragent import UserAgent
 
 from input.parameter_handler import SpiderRequest
-from config import Config
+from config import config
 
 
 class SpiderResponse:
