@@ -6,8 +6,7 @@ import platform
 import psutil
 from datetime import datetime
 from typing import Dict, Any
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter
 
 from api.models import (
     SpiderTaskRequest, SpiderResponse,
