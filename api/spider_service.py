@@ -1,13 +1,11 @@
 """
-Spider Service Class - Integrates API with Task System
+Spider Service Class - Integrates API with RQ Task Queue
 """
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional, Any
 from datetime import datetime
 
-from tasks.manager import TaskManager
-from tasks.models import SpiderTask
-from config import config
-from tasks.models import TaskStatus, TaskType
+from tasks.queue import get_task_queue
+from tasks.worker_tasks import execute_spider_task
 from spiders.core.spider_loader import SpiderLoader
 from .models import (
     SpiderTaskRequest, SpiderResponse, 
@@ -15,17 +13,18 @@ from .models import (
 )
 
 class SpiderService:
-    """Spider Service Class - Now only responsible for creating tasks, does not directly execute crawling"""
+    """Spider Service Class - Uses RQ for task management"""
     
     def __init__(self) -> None:
-        self.task_manager = TaskManager(config.tasks.tasks_dir)
+        self.task_queue = get_task_queue()
         self.spider_loader = SpiderLoader()
     
     async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:
-        """Create single URL crawling task"""
+        """Create single URL crawling task and enqueue to RQ"""
         try:
-            # Create task
-            task = SpiderTask.create_single_task(
+            # Enqueue task to RQ
+            job = self.task_queue.enqueue_task(
+                execute_spider_task,
                 url=request.url,
                 spider_name=request.spider_name,
                 method=request.method.value,
@@ -33,9 +32,6 @@ class SpiderService:
                 max_retries=request.max_retries,
                 delay=request.delay
             )
-            
-            # Save task
-            task_id = self.task_manager.create_task(task)
             
             # Return successful task creation response
             return SpiderResponse(
@@ -45,7 +41,7 @@ class SpiderService:
                 content_length=0,
                 encoding="utf-8",
                 headers={},
-                task_id=task_id,
+                task_id=job.id,
                 error_message=None
             )
             
@@ -61,38 +57,70 @@ class SpiderService:
             )
     
     def get_task_status(self, task_id: str) -> Optional[TaskInfo]:
-        """Get task status"""
-        task = self.task_manager.get_task(task_id)
-        if not task:
+        """Get task status from RQ job"""
+        job = self.task_queue.get_job(task_id)
+        if not job:
             return None
         
-        # Convert to API model
+        # Map RQ job status to our TaskStatus
+        status_map = {
+            'queued': 'pending',
+            'started': 'running',
+            'finished': 'completed',
+            'failed': 'failed',
+            'deferred': 'pending',
+            'scheduled': 'pending',
+            'stopped': 'failed',
+            'canceled': 'failed'
+        }
+        
+        status = status_map.get(job.get_status(), 'pending')
+        
+        # Calculate progress based on status
+        progress = 0.0
+        if status == 'running':
+            progress = 50.0
+        elif status == 'completed':
+            progress = 100.0
+        
+        # Get error message if failed
+        error_message = None
+        if status == 'failed' and job.exc_info:
+            error_message = str(job.exc_info)
+        
         return TaskInfo(
-            task_id=task.task_id,
-            status=task.status,
-            created_at=task.created_at,
-            started_at=task.updated_at if task.status != TaskStatus.PENDING else None,
-            completed_at=task.updated_at if task.status in [TaskStatus.COMPLETED, TaskStatus.FAILED] else None,
-            progress=task.progress,
-            error_message=task.error_message
+            task_id=job.id,
+            status=status,
+            created_at=job.created_at.isoformat() if job.created_at else datetime.now().isoformat(),
+            started_at=job.started_at.isoformat() if job.started_at else None,
+            completed_at=job.ended_at.isoformat() if job.ended_at else None,
+            progress=progress,
+            error_message=error_message
         )
     
     def get_task_result(self, task_id: str) -> Optional[Any]:
-        """Get task result"""
-        task = self.task_manager.get_task(task_id)
-        if not task or task.status != TaskStatus.COMPLETED:
+        """Get task result from RQ job"""
+        job = self.task_queue.get_job(task_id)
+        if not job or job.get_status() != 'finished':
             return None
         
-        # Build single task result response
+        # Get job result
+        result = job.result
+        if not result:
+            return None
+        
+        # Build response from job result
         return SpiderResponse(
-            url=task.urls[0] if task.urls else "",
-            status_code=200 if task.successful_count > 0 else 500,
-            success=task.successful_count > 0,
-            content_length=0,
-            encoding="utf-8",
-            headers={},
-            task_id=task.task_id,
-            error_message=task.error_message
+            url=result.get('url', ''),
+            status_code=result.get('status_code', 200 if result.get('success') else 500),
+            success=result.get('success', False),
+            content_length=result.get('content_length', 0),
+            encoding=result.get('encoding', 'utf-8'),
+            headers=result.get('headers', {}),
+            response_time=result.get('response_time', 0.0),
+            extracted_data=result.get('extracted_data'),
+            task_id=job.id,
+            error_message=result.get('error_message')
         )
     
     def get_available_spiders(self) -> Dict[str, str]:

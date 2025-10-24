@@ -12,6 +12,7 @@ A Python-based modular web scraping framework focused on efficient single URL cr
 
 ### Requirements
 - Python 3.7+
+- Redis Server 5.0+
 - pip package manager
 
 ### Installation Steps
@@ -23,11 +24,17 @@ cd web-craft
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Setup configuration
-cp config.example.toml config.toml
-# Edit config.toml to customize settings
+# 3. Install and start Redis
+# Windows: Download from https://github.com/microsoftarchive/redis/releases
+# Linux: sudo apt-get install redis-server
+# macOS: brew install redis
+redis-server
 
-# 4. Verify installation
+# 4. Setup configuration
+cp config.example.toml config.toml
+# Edit config.toml to customize Redis and other settings
+
+# 5. Verify installation
 python -m tests.test_ip_crawl
 ```
 
@@ -39,24 +46,24 @@ web-craft/
 ├── worker/                 # Worker Layer - Spider Engine  
 ├── output/                 # Output Layer - Data Export
 ├── api/                    # API Layer - Web Interface
+│   ├── spider_service.py  # Spider Service (RQ Integration)
+│   ├── routes.py          # API Routes
+│   └── models.py          # API Data Models
 ├── cmd/                    # Command Line Tools
 │   ├── server.py          # API Server
-│   └── crawl.py           # Task Executor
-├── tasks/                  # Task Management System
+│   └── crawl.py           # RQ Worker
+├── tasks/                  # Task Management System (RQ-based)
+│   ├── queue.py           # RQ Task Queue Manager
+│   ├── worker_tasks.py    # Worker Task Functions
+│   └── models.py          # Task Data Models (legacy)
 ├── spiders/                # Spider Module System
 │   ├── core/              # Framework Core Components
 │   │   ├── base_spider.py # Base Spider Abstract Class
 │   │   └── spider_loader.py # Spider Loader
 │   └── spiders/           # User Custom Spiders
-│       ├── default.py # Default General Spider
-│       └── ip.py   # IP Address Spider
+│       ├── default.py     # Default General Spider
+│       └── ip.py          # IP Address Spider
 ├── tests/                  # Test Suite
-├── data/                   # Data Storage Directory
-│   └── tasks/             # Task File Storage
-│       ├── pending/       # Pending Tasks
-│       ├── running/       # Running Tasks
-│       ├── completed/     # Completed Tasks
-│       └── failed/        # Failed Tasks
 ├── config.py               # Configuration Module
 ├── config.toml             # Configuration File (user-specific, not in git)
 ├── config.example.toml     # Configuration Example Template
@@ -64,26 +71,48 @@ web-craft/
 └── README.md              # Project Documentation
 ```
 
+### Architecture Overview
+
+**Task Queue System (RQ + Redis)**:
+- API creates tasks → Enqueued to Redis via RQ
+- Workers consume tasks → Process spider jobs from Redis queue
+- Job status tracking → Query job status and results via RQ
+
+**Benefits**:
+- ✅ Simplified architecture (no file-based task storage)
+- ✅ Better scalability (multiple workers can consume from same queue)
+- ✅ Built-in job retry and failure handling
+- ✅ Real-time job status tracking
+
 ## ✨ Core Features
 
 - 🌐 **RESTful API** - Complete Web API interface
 - 🎯 **Single URL Focus** - Efficient single webpage crawling
-- ⚡ **Asynchronous Processing** - Support for async task queues and concurrent processing
+- ⚡ **RQ Task Queue** - Redis-based distributed task queue with RQ
 - 🔧 **Modular Design** - Extensible spider module system
 - 🔄 **Auto Retry** - Intelligent retry mechanism and delay control
+- 📊 **Job Tracking** - Real-time job status and result tracking
 - 🧪 **Custom Parsing** - Users have full control over data extraction logic in parse methods
 - 🤖 **AI-Friendly** - Simple interface design makes it perfect for AI-assisted spider development
+- 🚀 **Scalable** - Multiple workers can process tasks concurrently
 
 ## 🚀 Quick Start
 
 ### 1. Start the System
 
 ```bash
-# Terminal 1: Start API server
+# Terminal 1: Start Redis server (if not already running)
+redis-server
+
+# Terminal 2: Start API server
 python cmd/server.py --port 8080
 
-# Terminal 2: Start task executor
+# Terminal 3: Start RQ worker
 python cmd/crawl.py
+
+# Optional: Start multiple workers for parallel processing
+python cmd/crawl.py  # Worker 2
+python cmd/crawl.py  # Worker 3
 ```
 
 ### 2. Use API for Crawling
@@ -128,9 +157,13 @@ timeout = 30        # Request timeout (seconds)
 max_retries = 3     # Maximum retry count
 delay = 1.0         # Request delay (seconds)
 
-[tasks]
-# Task management configuration
-tasks_dir = "data/tasks"  # Task storage directory
+[redis]
+# Redis configuration for RQ task queue
+host = "localhost"  # Redis server host
+port = 6379         # Redis server port
+db = 0              # Redis database number
+password = ""       # Redis password (leave empty if no password)
+queue_name = "web_craft_tasks"  # RQ queue name
 
 [concurrency]
 # Concurrency control configuration
@@ -156,7 +189,9 @@ from config import config
 # Access configuration
 timeout = config.spider.timeout
 max_retries = config.spider.max_retries
-tasks_dir = config.tasks.tasks_dir
+redis_host = config.redis.host
+redis_port = config.redis.port
+queue_name = config.redis.queue_name
 max_concurrent = config.concurrency.max_concurrent_requests
 
 # Modify configuration at runtime
@@ -172,10 +207,10 @@ python cmd/server.py --port 8080 --host 0.0.0.0
 python cmd/server.py --reload --log-level DEBUG
 python cmd/server.py --timeout 60 --max-requests 20
 
-# Task executor arguments
+# RQ worker arguments
 python cmd/crawl.py
-python cmd/crawl.py --interval 2
-python cmd/crawl.py --interval 2 --stats
+python cmd/crawl.py --burst  # Run in burst mode (quit after all jobs processed)
+python cmd/crawl.py --queues web_craft_tasks high_priority  # Listen to multiple queues
 ```
 ## 📖 API Documentation
 
@@ -234,10 +269,12 @@ The framework handles all the complexity (HTTP requests, retries, async processi
 ## 🛠️ Tech Stack
 
 - **Backend Framework**: FastAPI, asyncio
+- **Task Queue**: RQ (Redis Queue)
+- **Message Broker**: Redis
 - **HTTP Client**: aiohttp, requests  
 - **Data Processing**: pandas, json
 - **Testing Framework**: Custom test suite
-- **Deployment**: Supports distributed deployment
+- **Deployment**: Supports distributed deployment with multiple workers
 
 ## 📄 License
 

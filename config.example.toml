@@ -7,9 +7,13 @@ timeout = 30        # Default request timeout (seconds)
 max_retries = 3     # Default maximum retry count
 delay = 1.0         # Default request delay (seconds)
 
-[tasks]
-# Task management configuration
-tasks_dir = "data/tasks"  # Task storage directory
+[redis]
+# Redis configuration for RQ task queue
+host = "localhost"  # Redis server host
+port = 6379         # Redis server port
+db = 0              # Redis database number
+password = ""       # Redis password (leave empty if no password)
+queue_name = "web_craft_tasks"  # RQ queue name
 
 [concurrency]
 # Concurrency control configuration
