@@ -69,7 +69,6 @@ Example usage:
   %(prog)s --port 8080 --host 0.0.0.0        # Specify port and host
   %(prog)s --reload --log-level DEBUG        # Development mode with debug logging
   %(prog)s --workers 4                       # Production mode with 4 worker processes
-  %(prog)s --config-file custom.env          # Use custom configuration file
         """
     )
     
@@ -122,14 +121,6 @@ Example usage:
         help='Log file path, if not specified, output only to console'
     )
     
-    # Configuration file
-    config_group = parser.add_argument_group('Configuration File')
-    config_group.add_argument(
-        '--config-file', 
-        type=str,
-        help='Environment variable configuration file path (.env format)'
-    )
-    
     # Other options
     other_group = parser.add_argument_group('Other Options')
     other_group.add_argument(
@@ -144,22 +135,6 @@ Example usage:
     )
     
     return parser
-
-
-def load_config_file(config_file: str) -> None:
-    """Load configuration file"""
-    if not os.path.exists(config_file):
-        raise FileNotFoundError(f"Configuration file does not exist: {config_file}")
-    
-    try:
-        from dotenv import load_dotenv
-        load_dotenv(config_file)
-        print(f"✅ Configuration file loaded: {config_file}")
-    except ImportError:
-        print("⚠️  Warning: python-dotenv package is required to support .env configuration files")
-        print("   Run: pip install python-dotenv")
-    except Exception as e:
-        raise ValueError(f"Failed to load configuration file: {e}")
 
 
 def print_startup_info(args: argparse.Namespace) -> None:
@@ -189,10 +164,6 @@ def main() -> None:
     args = parser.parse_args()
     
     try:
-        # Load configuration file
-        if args.config_file:
-            load_config_file(args.config_file)
-        
         # Validate arguments
         validate_args(args)
         
