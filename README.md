@@ -130,7 +130,6 @@ cp config.example.toml config.toml
 [spider]
 # Spider configuration
 timeout = 30        # Request timeout (seconds)
-max_retries = 3     # Maximum retry count
 
 [redis]
 # Redis configuration for RQ task queue
@@ -159,7 +158,6 @@ from config import config
 
 # Access configuration
 timeout = config.spider.timeout
-max_retries = config.spider.max_retries
 redis_host = config.redis.host
 redis_port = config.redis.port
 queue_name = config.redis.queue_name

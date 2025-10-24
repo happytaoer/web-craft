@@ -89,7 +89,6 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
     - **method**: HTTP method (GET, POST, etc.)
     - **headers**: Custom request headers
     - **timeout**: Timeout duration
-    - **max_retries**: Maximum retry count
     
     Returns crawling results immediately with task ID for reference.
     """

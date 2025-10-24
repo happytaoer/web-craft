@@ -15,8 +15,7 @@ class SingleCrawlTest(BaseTest):
             data = {
                 "url": "https://ip.me",
                 "spider_name": "ipspider",
-                "timeout": 15,
-                "max_retries": 2
+                "timeout": 15
             }
             
             response = self.make_request('POST', '/crawl/single', data)
