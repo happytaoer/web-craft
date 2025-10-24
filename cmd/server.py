@@ -134,11 +134,6 @@ Example usage:
         type=int,
         help='Maximum number of URLs per batch request (default: 100)'
     )
-    app_group.add_argument(
-        '--timeout', 
-        type=int,
-        help=f'Default request timeout in seconds (default: {config.spider.timeout})'
-    )
     
     # Security configuration
     security_group = parser.add_argument_group('Security Configuration')
@@ -234,10 +229,6 @@ def main() -> None:
         
         # Setup logging
         setup_logging(args.log_level, args.log_file)
-        
-        # Apply configuration to global config
-        if args.timeout:
-            config.spider.timeout = args.timeout
         
         if args.max_requests:
             config.concurrency.max_concurrent_requests = args.max_requests
