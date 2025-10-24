@@ -39,7 +39,6 @@ python -m tests.test_ip_crawl
 
 ```
 web-craft/
-├── input/                  # Input Layer - Parameter Processing
 ├── worker/                 # Worker Layer - Spider Engine  
 ├── output/                 # Output Layer - Data Export
 ├── api/                    # API Layer - Web Interface

@@ -7,7 +7,6 @@ from typing import Dict, Any, Optional
 from dataclasses import dataclass
 from api.models import SpiderTaskRequest
 from worker.spider_engine import SpiderEngine
-from input.parameter_handler import SpiderRequest
 
 
 @dataclass
@@ -62,22 +61,11 @@ class BaseSpider(ABC):
         # Request pre-processing
         processed_request = self.pre_request(request)
         
-        # Convert to SpiderRequest
-        spider_request = SpiderRequest(
-            url=str(processed_request.url),
-            method=processed_request.method.value,
-            params=processed_request.params,
-            data=processed_request.data,
-            timeout=processed_request.timeout,
-            max_retries=processed_request.max_retries,
-            use_proxy=processed_request.use_proxy,
-        )
-        
         start_time = time.time()
         
         try:
             # Use spider engine to execute request
-            response = await self.spider_engine.fetch_async(spider_request)
+            response = await self.spider_engine.fetch_async(processed_request)
             
             if response and response.success:
                 # Call subclass parse method, pass in raw content
@@ -114,7 +102,7 @@ class BaseSpider(ABC):
                     )
                 else:
                     result = SpiderResult(
-                        url=spider_request.url,
+                        url=str(processed_request.url),
                         status_code=0,
                         success=False,
                         content="",
@@ -127,7 +115,7 @@ class BaseSpider(ABC):
                 
         except Exception as e:
             result = SpiderResult(
-                url=spider_request.url,
+                url=str(processed_request.url),
                 status_code=0,
                 success=False,
                 content="",

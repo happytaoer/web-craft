@@ -7,7 +7,7 @@ from typing import Dict, Optional
 import aiohttp
 from fake_useragent import UserAgent
 
-from input.parameter_handler import SpiderRequest
+from api.models import SpiderTaskRequest
 from config import config
 
 
@@ -33,7 +33,7 @@ class SpiderEngine:
         self.ua = UserAgent()
     
     
-    async def fetch_async(self, request: SpiderRequest) -> Optional[SpiderResponse]:
+    async def fetch_async(self, request: SpiderTaskRequest) -> Optional[SpiderResponse]:
         """Asynchronous web scraping"""
         try:
             # Prepare request parameters - use default headers
@@ -44,8 +44,8 @@ class SpiderEngine:
             
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.request(
-                    method=request.method,
-                    url=request.url,
+                    method=request.method.value,
+                    url=str(request.url),
                     headers=headers,
                     params=request.params,
                     data=request.data
@@ -86,7 +86,7 @@ class SpiderEngine:
                 error_message=str(e)
             )
     
-    async def fetch_with_retry(self, request: SpiderRequest) -> Optional[SpiderResponse]:
+    async def fetch_with_retry(self, request: SpiderTaskRequest) -> Optional[SpiderResponse]:
         """Fetch with retry (async)"""
         for attempt in range(request.max_retries + 1):
             try:
