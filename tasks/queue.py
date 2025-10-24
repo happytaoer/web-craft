@@ -33,7 +33,7 @@ class TaskQueue:
     
     def enqueue_task(self, func, *args, **kwargs):
         """
-        Enqueue a task
+        Enqueue a task with retry mechanism
         
         Args:
             func: Function to execute
@@ -43,7 +43,16 @@ class TaskQueue:
         Returns:
             RQ Job object
         """
-        job = self.queue.enqueue(func, *args, **kwargs)
+        # Enqueue task with retry configuration
+        # retry: Retry object that specifies max retries and intervals
+        from rq import Retry
+        
+        job = self.queue.enqueue(
+            func, 
+            *args, 
+            retry=Retry(max=config.spider.max_retries, interval=10),
+            **kwargs
+        )
         return job
     
     def get_job(self, job_id: str):
