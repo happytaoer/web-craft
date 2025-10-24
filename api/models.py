@@ -45,23 +45,6 @@ class SpiderResponse(BaseModel):
     error_message: Optional[str] = Field(default=None, description="Error message")
     task_id: Optional[str] = Field(default=None, description="Task ID")
 
-class TaskStatus(str, Enum):
-    """Task status enumeration"""
-    PENDING = "pending"
-    RUNNING = "running"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-
-class TaskInfo(BaseModel):
-    """Task information model"""
-    task_id: str = Field(..., description="Task ID")
-    status: TaskStatus = Field(..., description="Task status")
-    created_at: str = Field(..., description="Creation time")
-    started_at: Optional[str] = Field(default=None, description="Start time")
-    completed_at: Optional[str] = Field(default=None, description="Completion time")
-    error_message: Optional[str] = Field(default=None, description="Error message")
-
 
 class ApiResponse(BaseModel):
     """Unified API response model"""

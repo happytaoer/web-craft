@@ -106,9 +106,6 @@ python cmd/crawl.py  # Worker 3
 curl -X POST "http://127.0.0.1:8080/api/v1/crawl/single" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "spider_name": "default"}'
-
-# Query task status
-curl "http://127.0.0.1:8080/api/v1/task/{task_id}/status"
 ```
 
 ### 3. Run Tests

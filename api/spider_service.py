@@ -8,8 +8,7 @@ from tasks.queue import get_task_queue
 from tasks.worker_tasks import execute_spider_task
 from spiders.core.spider_loader import SpiderLoader
 from .models import (
-    SpiderTaskRequest, SpiderResponse, 
-    TaskInfo
+    SpiderTaskRequest, SpiderResponse
 )
 
 class SpiderService:
@@ -54,40 +53,6 @@ class SpiderService:
                 headers={},
                 error_message=f"Task creation failed: {str(e)}"
             )
-    
-    def get_task_status(self, task_id: str) -> Optional[TaskInfo]:
-        """Get task status from RQ job"""
-        job = self.task_queue.get_job(task_id)
-        if not job:
-            return None
-        
-        # Map RQ job status to our TaskStatus
-        status_map = {
-            'queued': 'pending',
-            'started': 'running',
-            'finished': 'completed',
-            'failed': 'failed',
-            'deferred': 'pending',
-            'scheduled': 'pending',
-            'stopped': 'failed',
-            'canceled': 'failed'
-        }
-        
-        status = status_map.get(job.get_status(), 'pending')
-        
-        # Get error message if failed
-        error_message = None
-        if status == 'failed' and job.exc_info:
-            error_message = str(job.exc_info)
-        
-        return TaskInfo(
-            task_id=job.id,
-            status=status,
-            created_at=job.created_at.isoformat() if job.created_at else datetime.now().isoformat(),
-            started_at=job.started_at.isoformat() if job.started_at else None,
-            completed_at=job.ended_at.isoformat() if job.ended_at else None,
-            error_message=error_message
-        )
     
     def get_available_spiders(self) -> Dict[str, str]:
         """Get list of available spiders"""
