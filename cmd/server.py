@@ -17,7 +17,7 @@ from api.app import run_server
 from config import config
 
 
-def setup_logging(log_level: str, log_file: Optional[str] = None) -> None:
+def setup_logging(log_level: str) -> None:
     """Configure logging system"""
     level = getattr(logging, log_level.upper(), logging.INFO)
     
@@ -34,12 +34,6 @@ def setup_logging(log_level: str, log_file: Optional[str] = None) -> None:
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
     root_logger.addHandler(console_handler)
-    
-    # File handler (if log file is specified)
-    if log_file:
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
-        file_handler.setFormatter(formatter)
-        root_logger.addHandler(file_handler)
 
 
 def validate_args(args: argparse.Namespace) -> None:
@@ -115,11 +109,6 @@ Example usage:
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
         help='Log level (default: INFO)'
     )
-    log_group.add_argument(
-        '--log-file', 
-        type=str,
-        help='Log file path, if not specified, output only to console'
-    )
     
     # Other options
     other_group = parser.add_argument_group('Other Options')
@@ -147,10 +136,6 @@ def print_startup_info(args: argparse.Namespace) -> None:
     print(f"🔄 Auto Reload: {'Yes' if args.reload else 'No'}")
     print(f"🐛 Debug Mode: {'Yes' if args.debug else 'No'}")
     print(f"📝 Log Level: {args.log_level}")
-    
-    if args.log_file:
-        print(f"📄 Log File: {args.log_file}")
-    
     print("=" * 50)
     print(f"📖 API Documentation: http://{args.host}:{args.port}/docs")
     print(f"🔍 ReDoc Documentation: http://{args.host}:{args.port}/redoc")
@@ -168,7 +153,7 @@ def main() -> None:
         validate_args(args)
         
         # Setup logging
-        setup_logging(args.log_level, args.log_file)
+        setup_logging(args.log_level)
         
         # Check configuration mode
         if args.check_config:
