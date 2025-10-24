@@ -10,11 +10,7 @@ import logging
 from typing import Dict, Any
 from api.routes import router
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Get logger instance (logging is configured in server.py)
 logger = logging.getLogger(__name__)
 
 
@@ -94,7 +90,7 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
             "success": False,
             "message": "Internal server error",
             "error_code": "INTERNAL_SERVER_ERROR",
-            "detail": str(exc) if app.debug else "Please contact administrator"
+            "detail": "Please contact administrator"
         }
     )
 
@@ -166,14 +162,4 @@ def run_server(host: str = "0.0.0.0", port: int = 8000,
         reload=reload,
         workers=workers,
         log_level="info"
-    )
-
-
-if __name__ == "__main__":
-    # Run in development mode
-    run_server(
-        host="127.0.0.1",
-        port=8000,
-        reload=True,
-        workers=1
     )
