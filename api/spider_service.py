@@ -76,13 +76,6 @@ class SpiderService:
         
         status = status_map.get(job.get_status(), 'pending')
         
-        # Calculate progress based on status
-        progress = 0.0
-        if status == 'running':
-            progress = 50.0
-        elif status == 'completed':
-            progress = 100.0
-        
         # Get error message if failed
         error_message = None
         if status == 'failed' and job.exc_info:
@@ -94,7 +87,6 @@ class SpiderService:
             created_at=job.created_at.isoformat() if job.created_at else datetime.now().isoformat(),
             started_at=job.started_at.isoformat() if job.started_at else None,
             completed_at=job.ended_at.isoformat() if job.ended_at else None,
-            progress=progress,
             error_message=error_message
         )
     

@@ -61,7 +61,6 @@ class TaskInfo(BaseModel):
     created_at: str = Field(..., description="Creation time")
     started_at: Optional[str] = Field(default=None, description="Start time")
     completed_at: Optional[str] = Field(default=None, description="Completion time")
-    progress: float = Field(default=0.0, ge=0, le=100, description="Progress percentage")
     error_message: Optional[str] = Field(default=None, description="Error message")
 
 
