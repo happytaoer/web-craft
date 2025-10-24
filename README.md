@@ -109,9 +109,6 @@ curl -X POST "http://127.0.0.1:8080/api/v1/crawl/single" \
 
 # Query task status
 curl "http://127.0.0.1:8080/api/v1/task/{task_id}/status"
-
-# Get task results
-curl "http://127.0.0.1:8080/api/v1/task/{task_id}/result"
 ```
 
 ### 3. Run Tests
