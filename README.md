@@ -71,19 +71,6 @@ web-craft/
 └── README.md              # Project Documentation
 ```
 
-### Architecture Overview
-
-**Task Queue System (RQ + Redis)**:
-- API creates tasks → Enqueued to Redis via RQ
-- Workers consume tasks → Process spider jobs from Redis queue
-- Job status tracking → Query job status and results via RQ
-
-**Benefits**:
-- ✅ Simplified architecture (no file-based task storage)
-- ✅ Better scalability (multiple workers can consume from same queue)
-- ✅ Built-in job retry and failure handling
-- ✅ Real-time job status tracking
-
 ## ✨ Core Features
 
 - 🌐 **RESTful API** - Complete Web API interface
@@ -265,16 +252,6 @@ class AIGeneratedSpider(BaseSpider):
 - "Build a spider for social media posts with likes, comments, and shares"
 
 The framework handles all the complexity (HTTP requests, retries, async processing, task management) while AI focuses on the core parsing logic!
-
-## 🛠️ Tech Stack
-
-- **Backend Framework**: FastAPI, asyncio
-- **Task Queue**: RQ (Redis Queue)
-- **Message Broker**: Redis
-- **HTTP Client**: aiohttp, requests  
-- **Data Processing**: pandas, json
-- **Testing Framework**: Custom test suite
-- **Deployment**: Supports distributed deployment with multiple workers
 
 ## 📄 License
 
