@@ -4,10 +4,8 @@ Supports rich command line parameter configuration
 """
 import argparse
 import sys
-import os
 import logging
 from pathlib import Path
-from typing import Optional
 
 # Add project root directory to Python path
 project_root = Path(__file__).parent.parent
