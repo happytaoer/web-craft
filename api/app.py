@@ -31,7 +31,6 @@ app = FastAPI(
     
     1. Use `/crawl/single` to crawl a single web page
     2. Use `/task/{task_id}/status` to query task status
-    3. Use `/task/{task_id}/result` to get task results
     
     ## Usage Instructions
     

@@ -140,53 +140,6 @@ async def get_task_status(task_id: str) -> ApiResponse:
         )
 
 
-@router.get("/task/{task_id}/result", response_model=ApiResponse, summary="Get Task Result")
-async def get_task_result(task_id: str) -> ApiResponse:
-    """
-    Get task result
-    
-    - **task_id**: Task ID
-    """
-    try:
-        task_info: TaskInfo = spider_service.get_task_status(task_id)
-        
-        if not task_info:
-            return create_api_response(
-                success=False,
-                message="Task does not exist",
-                error_code="TASK_NOT_FOUND"
-            )
-        
-        if task_info.status != "completed":
-            return create_api_response(
-                success=False,
-                message=f"Task not completed, current status: {task_info.status}",
-                error_code="TASK_NOT_COMPLETED"
-            )
-        
-        result: SpiderResponse = spider_service.get_task_result(task_id)
-        
-        if not result:
-            return create_api_response(
-                success=False,
-                message="Task result does not exist",
-                error_code="RESULT_NOT_FOUND"
-            )
-        
-        return create_api_response(
-            success=True,
-            message="Task result retrieved successfully",
-            data=result.model_dump()
-        )
-        
-    except Exception as e:
-        return create_api_response(
-            success=False,
-            message=f"Failed to get task result: {str(e)}",
-            error_code="TASK_RESULT_ERROR"
-        )
-
-
 @router.get("/spiders", response_model=ApiResponse, summary="List Available Spiders")
 async def list_spiders() -> ApiResponse:
     """

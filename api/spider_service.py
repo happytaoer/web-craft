@@ -89,31 +89,6 @@ class SpiderService:
             error_message=error_message
         )
     
-    def get_task_result(self, task_id: str) -> Optional[Any]:
-        """Get task result from RQ job"""
-        job = self.task_queue.get_job(task_id)
-        if not job or job.get_status() != 'finished':
-            return None
-        
-        # Get job result
-        result = job.result
-        if not result:
-            return None
-        
-        # Build response from job result
-        return SpiderResponse(
-            url=result.get('url', ''),
-            status_code=result.get('status_code', 200 if result.get('success') else 500),
-            success=result.get('success', False),
-            content_length=result.get('content_length', 0),
-            encoding=result.get('encoding', 'utf-8'),
-            headers=result.get('headers', {}),
-            response_time=result.get('response_time', 0.0),
-            extracted_data=result.get('extracted_data'),
-            task_id=job.id,
-            error_message=result.get('error_message')
-        )
-    
     def get_available_spiders(self) -> Dict[str, str]:
         """Get list of available spiders"""
         return self.spider_loader.list_spiders()
