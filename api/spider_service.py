@@ -1,8 +1,6 @@
 """
 Spider Service Class - Integrates API with RQ Task Queue
 """
-from typing import Dict, Optional, Any
-from datetime import datetime
 
 from tasks.queue import get_task_queue
 from tasks.worker_tasks import execute_spider_task
