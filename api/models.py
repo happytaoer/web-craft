@@ -24,7 +24,6 @@ class SpiderTaskRequest(BaseModel):
     params: Optional[Dict[str, Any]] = Field(default=None, description="URL parameters")
     data: Optional[Dict[str, Any]] = Field(default=None, description="POST data")
     timeout: int = Field(default=30, ge=1, le=300, description="Request timeout (seconds)")
-    use_proxy: bool = Field(default=False, description="Whether to use proxy")
     
     @validator('url')
     def validate_url(cls, v: HttpUrl) -> str:
