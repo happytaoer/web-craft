@@ -121,26 +121,6 @@ Example usage:
         type=str,
         help='Log file path, if not specified, output only to console'
     )
-    log_group.add_argument(
-        '--access-log', 
-        action='store_true',
-        help='Enable access log recording'
-    )
-    
-    # Security configuration
-    security_group = parser.add_argument_group('Security Configuration')
-    security_group.add_argument(
-        '--cors-origins', 
-        type=str, 
-        nargs='*',
-        default=['*'],
-        help='Allowed CORS origins, recommend specifying specific domains in production (default: *)'
-    )
-    security_group.add_argument(
-        '--api-key', 
-        type=str,
-        help='API access key, when enabled, X-API-Key header is required in requests'
-    )
     
     # Configuration file
     config_group = parser.add_argument_group('Configuration File')
@@ -195,9 +175,6 @@ def print_startup_info(args: argparse.Namespace) -> None:
     
     if args.log_file:
         print(f"📄 Log File: {args.log_file}")
-    
-    if args.api_key:
-        print(f"🔐 API Key: Enabled")
     
     print("=" * 50)
     print(f"📖 API Documentation: http://{args.host}:{args.port}/docs")
