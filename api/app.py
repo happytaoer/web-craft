@@ -94,7 +94,7 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
             "success": False,
             "message": "Internal server error",
             "error_code": "INTERNAL_SERVER_ERROR",
-            "detail": str(exc) if app.debug else "Please contact administrator"
+            "detail": "Please contact administrator"
         }
     )
 

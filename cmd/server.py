@@ -17,9 +17,9 @@ from api.app import run_server
 from config import config
 
 
-def setup_logging(log_level: str) -> None:
+def setup_logging() -> None:
     """Configure logging system"""
-    level = getattr(logging, log_level.upper(), logging.INFO)
+    level = getattr(logging, config.logging.level.upper(), logging.INFO)
     
     # Log format
     formatter = logging.Formatter(
@@ -45,11 +45,6 @@ def validate_args(args: argparse.Namespace) -> None:
     # Validate worker count
     if args.workers < 1:
         raise ValueError(f"Worker count must be greater than 0, current value: {args.workers}")
-    
-    # Validate log level
-    valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
-    if args.log_level.upper() not in valid_levels:
-        raise ValueError(f"Invalid log level: {args.log_level}, valid values: {valid_levels}")
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -61,7 +56,7 @@ def create_parser() -> argparse.ArgumentParser:
 Example usage:
   %(prog)s                                   # Start with default configuration
   %(prog)s --port 8080 --host 0.0.0.0        # Specify port and host
-  %(prog)s --reload --log-level DEBUG        # Development mode with debug logging
+  %(prog)s --reload                          # Development mode with auto-reload
   %(prog)s --workers 4                       # Production mode with 4 worker processes
         """
     )
@@ -94,21 +89,6 @@ Example usage:
         action='store_true',
         help='Enable auto-reload, automatically restart when code changes (development mode)'
     )
-    dev_group.add_argument(
-        '--debug', 
-        action='store_true',
-        help='Enable debug mode, show detailed error information'
-    )
-    
-    # Logging configuration
-    log_group = parser.add_argument_group('Logging Configuration')
-    log_group.add_argument(
-        '--log-level', 
-        type=str, 
-        default='INFO',
-        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
-        help='Log level (default: INFO)'
-    )
     
     # Other options
     other_group = parser.add_argument_group('Other Options')
@@ -128,8 +108,7 @@ def print_startup_info(args: argparse.Namespace) -> None:
     print(f"🔌 Port: {args.port}")
     print(f"👥 Workers: {args.workers}")
     print(f"🔄 Auto Reload: {'Yes' if args.reload else 'No'}")
-    print(f"🐛 Debug Mode: {'Yes' if args.debug else 'No'}")
-    print(f"📝 Log Level: {args.log_level}")
+    print(f"📝 Log Level: {config.logging.level}")
     print("=" * 50)
     print(f"📖 API Documentation: http://{args.host}:{args.port}/docs")
     print(f"🔍 ReDoc Documentation: http://{args.host}:{args.port}/redoc")
@@ -147,7 +126,7 @@ def main() -> None:
         validate_args(args)
         
         # Setup logging
-        setup_logging(args.log_level)
+        setup_logging()
 
         
         # Print startup information
@@ -165,9 +144,8 @@ def main() -> None:
         print("\n👋 Server stopped")
     except Exception as e:
         print(f"❌ Startup failed: {e}")
-        if args.debug if 'args' in locals() else False:
-            import traceback
-            traceback.print_exc()
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 
