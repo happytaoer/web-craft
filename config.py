@@ -24,12 +24,6 @@ class RedisConfig:
 
 
 @dataclass
-class ConcurrencyConfig:
-    """Concurrency configuration"""
-    max_concurrent_requests: int = 10
-
-
-@dataclass
 class ServerConfig:
     """Server configuration"""
     host: str = "127.0.0.1"
@@ -49,7 +43,6 @@ class Config:
     """Global configuration class"""
     spider: SpiderConfig = field(default_factory=SpiderConfig)
     redis: RedisConfig = field(default_factory=RedisConfig)
-    concurrency: ConcurrencyConfig = field(default_factory=ConcurrencyConfig)
     server: ServerConfig = field(default_factory=ServerConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     
@@ -69,7 +62,6 @@ class Config:
         config = cls(
             spider=SpiderConfig(**data.get("spider", {})),
             redis=RedisConfig(**data.get("redis", {})),
-            concurrency=ConcurrencyConfig(**data.get("concurrency", {})),
             server=ServerConfig(**data.get("server", {})),
             logging=LoggingConfig(**data.get("logging", {})),
         )
@@ -82,8 +74,6 @@ class Config:
             raise ValueError("timeout must be greater than 0")
         if self.spider.max_retries < 0:
             raise ValueError("max_retries must be greater than or equal to 0")
-        if self.concurrency.max_concurrent_requests <= 0:
-            raise ValueError("max_concurrent_requests must be greater than 0")
         if not (1 <= self.server.port <= 65535):
             raise ValueError("port must be in range 1-65535")
 

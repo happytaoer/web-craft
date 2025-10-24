@@ -127,14 +127,6 @@ Example usage:
         help='Enable access log recording'
     )
     
-    # Application configuration
-    app_group = parser.add_argument_group('Application Configuration')
-    app_group.add_argument(
-        '--max-requests', 
-        type=int,
-        help='Maximum number of URLs per batch request (default: 100)'
-    )
-    
     # Security configuration
     security_group = parser.add_argument_group('Security Configuration')
     security_group.add_argument(
@@ -229,9 +221,6 @@ def main() -> None:
         
         # Setup logging
         setup_logging(args.log_level, args.log_file)
-        
-        if args.max_requests:
-            config.concurrency.max_concurrent_requests = args.max_requests
         
         # Check configuration mode
         if args.check_config:
