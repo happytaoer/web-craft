@@ -58,7 +58,6 @@ app = FastAPI(
     - `method`: HTTP request method (default: "GET")
     - `timeout`: Request timeout (default: 30 seconds)
     - `max_retries`: Maximum retry count (default: 3)
-    - `delay`: Request delay time (default: 1.0 seconds)
     
     The system automatically uses default request header configuration, no manual specification needed.
     """,

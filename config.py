@@ -11,7 +11,6 @@ class SpiderConfig:
     """Spider configuration"""
     timeout: int = 30
     max_retries: int = 3
-    delay: float = 1.0
 
 
 @dataclass

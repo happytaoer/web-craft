@@ -14,8 +14,7 @@ def execute_spider_task(
     spider_name: str = "default",
     method: str = "GET",
     timeout: int = 30,
-    max_retries: int = 3,
-    delay: float = 1.0
+    max_retries: int = 3
 ) -> Dict[str, Any]:
     """
     Execute spider crawling task
@@ -28,7 +27,6 @@ def execute_spider_task(
         method: HTTP method
         timeout: Request timeout
         max_retries: Maximum retry count
-        delay: Request delay
         
     Returns:
         Task execution result dictionary
@@ -53,8 +51,7 @@ def execute_spider_task(
             spider_name=spider_name,
             method=method,
             timeout=timeout,
-            max_retries=max_retries,
-            delay=delay
+            max_retries=max_retries
         )
         
         # Execute crawling (run async function in sync context)

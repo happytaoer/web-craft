@@ -15,7 +15,6 @@ class SpiderRequest:
     data: Optional[Dict[str, Any]] = None
     timeout: int = 30
     max_retries: int = 3
-    delay: float = 1.0
     use_proxy: bool = False
 
     def __post_init__(self):

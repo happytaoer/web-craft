@@ -5,7 +5,6 @@
 # Spider basic configuration
 timeout = 30        # Default request timeout (seconds)
 max_retries = 3     # Default maximum retry count
-delay = 1.0         # Default request delay (seconds)
 
 [redis]
 # Redis configuration for RQ task queue
