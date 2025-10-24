@@ -27,8 +27,7 @@ class SpiderService:
                 url=request.url,
                 spider_name=request.spider_name,
                 method=request.method.value,
-                timeout=request.timeout,
-                max_retries=request.max_retries
+                timeout=request.timeout
             )
             
             # Return successful task creation response

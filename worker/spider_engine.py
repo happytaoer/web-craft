@@ -86,25 +86,6 @@ class SpiderEngine:
                 error_message=str(e)
             )
     
-    async def fetch_with_retry(self, request: SpiderTaskRequest) -> Optional[SpiderResponse]:
-        """Fetch with retry (async)"""
-        for attempt in range(request.max_retries + 1):
-            try:
-                response = await self.fetch_async(request)
-                if response and response.status_code == 200:
-                    return response
-                
-                if attempt < request.max_retries:
-                    print(f"Retry {attempt + 1}/{request.max_retries} - {request.url}")
-                    await asyncio.sleep(1.0 * (attempt + 1))
-                    
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed: {e}")
-                if attempt < request.max_retries:
-                    await asyncio.sleep(1.0 * (attempt + 1))
-        
-        return None
-    
     def close(self):
         """Close resources (no longer needed for async-only)"""
         pass

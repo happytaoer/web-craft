@@ -50,7 +50,6 @@ app = FastAPI(
     - `spider_name`: Spider module name (default: "default")
     - `method`: HTTP request method (default: "GET")
     - `timeout`: Request timeout (default: 30 seconds)
-    - `max_retries`: Maximum retry count (default: 3)
     
     The system automatically uses default request header configuration, no manual specification needed.
     """,
