@@ -96,12 +96,12 @@ class SpiderEngine:
                 
                 if attempt < request.max_retries:
                     print(f"Retry {attempt + 1}/{request.max_retries} - {request.url}")
-                    await asyncio.sleep(request.delay * (attempt + 1))
+                    await asyncio.sleep(1.0 * (attempt + 1))
                     
             except Exception as e:
                 print(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < request.max_retries:
-                    await asyncio.sleep(request.delay * (attempt + 1))
+                    await asyncio.sleep(1.0 * (attempt + 1))
         
         return None
     

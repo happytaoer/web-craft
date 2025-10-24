@@ -40,7 +40,6 @@ class SpiderTask:
     headers: Optional[Dict[str, str]] = None
     timeout: int = 30
     max_retries: int = 3
-    delay: float = 1.0
     
     # Removed export configuration - now only output to console
     
@@ -67,8 +66,7 @@ class SpiderTask:
         spider_name: str = "default",
         method: str = "GET",
         timeout: int = 30,
-        max_retries: int = 3,
-        delay: float = 1.0
+        max_retries: int = 3
     ) -> 'SpiderTask':
         """Create single URL crawling task"""
         task_id = str(uuid.uuid4())
@@ -85,8 +83,7 @@ class SpiderTask:
             method=method,
             headers={},  # Use default empty dict, system config provides default headers
             timeout=timeout,
-            max_retries=max_retries,
-            delay=delay
+            max_retries=max_retries
         )
     
     def update_status(self, status: TaskStatus, error_message: Optional[str] = None):

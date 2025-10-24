@@ -90,7 +90,6 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
     - **headers**: Custom request headers
     - **timeout**: Timeout duration
     - **max_retries**: Maximum retry count
-    - **delay**: Request delay
     
     Returns task ID, can query task status via /task/{task_id}/status
     """

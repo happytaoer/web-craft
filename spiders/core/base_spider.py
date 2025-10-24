@@ -70,7 +70,6 @@ class BaseSpider(ABC):
             data=processed_request.data,
             timeout=processed_request.timeout,
             max_retries=processed_request.max_retries,
-            delay=processed_request.delay,
             use_proxy=processed_request.use_proxy,
         )
         

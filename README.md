@@ -74,7 +74,7 @@ web-craft/
 - 🎯 **Single URL Focus** - Efficient single webpage crawling
 - ⚡ **RQ Task Queue** - Redis-based distributed task queue with RQ
 - 🔧 **Modular Design** - Extensible spider module system
-- 🔄 **Auto Retry** - Intelligent retry mechanism and delay control
+- 🔄 **Auto Retry** - Intelligent retry mechanism
 - 📊 **Job Tracking** - Real-time job status and result tracking
 - 🧪 **Custom Parsing** - Users have full control over data extraction logic in parse methods
 - 🤖 **AI-Friendly** - Simple interface design makes it perfect for AI-assisted spider development
@@ -139,7 +139,6 @@ cp config.example.toml config.toml
 # Spider configuration
 timeout = 30        # Request timeout (seconds)
 max_retries = 3     # Maximum retry count
-delay = 1.0         # Request delay (seconds)
 
 [redis]
 # Redis configuration for RQ task queue
