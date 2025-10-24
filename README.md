@@ -51,8 +51,7 @@ web-craft/
 │   └── crawl.py           # RQ Worker
 ├── tasks/                  # Task Management System (RQ-based)
 │   ├── queue.py           # RQ Task Queue Manager
-│   ├── worker_tasks.py    # Worker Task Functions
-│   └── models.py          # Task Data Models (legacy)
+│   └── worker_tasks.py    # Worker Task Functions
 ├── spiders/                # Spider Module System
 │   ├── core/              # Framework Core Components
 │   │   ├── base_spider.py # Base Spider Abstract Class
