@@ -11,7 +11,7 @@ A Python-based modular web scraping framework focused on efficient single URL cr
 ## 📦 Quick Installation
 
 ### Requirements
-- Python 3.7+
+- Python 3.11+
 - Redis Server 5.0+
 - pip package manager
 
@@ -25,9 +25,6 @@ cd web-craft
 pip install -r requirements.txt
 
 # 3. Install and start Redis
-# Windows: Download from https://github.com/microsoftarchive/redis/releases
-# Linux: sudo apt-get install redis-server
-# macOS: brew install redis
 redis-server
 
 # 4. Setup configuration
