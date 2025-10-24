@@ -10,6 +10,7 @@ import tomllib
 class SpiderConfig:
     """Spider configuration"""
     timeout: int = 30
+    max_retries: int = 3
 
 
 @dataclass
@@ -71,6 +72,8 @@ class Config:
         """Validate configuration"""
         if self.spider.timeout <= 0:
             raise ValueError("timeout must be greater than 0")
+        if self.spider.max_retries < 0:
+            raise ValueError("max_retries must be greater than or equal to 0")
         if not (1 <= self.server.port <= 65535):
             raise ValueError("port must be in range 1-65535")
 
