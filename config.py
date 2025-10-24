@@ -15,9 +15,13 @@ class SpiderConfig:
 
 
 @dataclass
-class TasksConfig:
-    """Tasks configuration"""
-    tasks_dir: str = "data/tasks"
+class RedisConfig:
+    """Redis configuration"""
+    host: str = "localhost"
+    port: int = 6379
+    db: int = 0
+    password: str = ""
+    queue_name: str = "web_craft_tasks"
 
 
 @dataclass
@@ -45,7 +49,7 @@ class LoggingConfig:
 class Config:
     """Global configuration class"""
     spider: SpiderConfig = field(default_factory=SpiderConfig)
-    tasks: TasksConfig = field(default_factory=TasksConfig)
+    redis: RedisConfig = field(default_factory=RedisConfig)
     concurrency: ConcurrencyConfig = field(default_factory=ConcurrencyConfig)
     server: ServerConfig = field(default_factory=ServerConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
@@ -65,7 +69,7 @@ class Config:
         # Create configuration object
         config = cls(
             spider=SpiderConfig(**data.get("spider", {})),
-            tasks=TasksConfig(**data.get("tasks", {})),
+            redis=RedisConfig(**data.get("redis", {})),
             concurrency=ConcurrencyConfig(**data.get("concurrency", {})),
             server=ServerConfig(**data.get("server", {})),
             logging=LoggingConfig(**data.get("logging", {})),
