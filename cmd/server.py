@@ -117,12 +117,6 @@ Example usage:
         action='version', 
         version='Web-Craft API v1.0.0'
     )
-    other_group.add_argument(
-        '--check-config', 
-        action='store_true',
-        help='Check configuration and exit, do not start server'
-    )
-    
     return parser
 
 
@@ -154,13 +148,7 @@ def main() -> None:
         
         # Setup logging
         setup_logging(args.log_level)
-        
-        # Check configuration mode
-        if args.check_config:
-            print("✅ Configuration check passed")
-            print(f"Host: {args.host}:{args.port}")
-            print(f"Workers: {args.workers}")
-            return
+
         
         # Print startup information
         print_startup_info(args)
