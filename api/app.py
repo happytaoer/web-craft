@@ -10,11 +10,7 @@ import logging
 from typing import Dict, Any
 from api.routes import router
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Get logger instance (logging is configured in server.py)
 logger = logging.getLogger(__name__)
 
 
