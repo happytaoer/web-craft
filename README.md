@@ -148,10 +148,6 @@ db = 0              # Redis database number
 password = ""       # Redis password (leave empty if no password)
 queue_name = "web_craft_tasks"  # RQ queue name
 
-[concurrency]
-# Concurrency control configuration
-max_concurrent_requests = 10  # Maximum concurrent requests
-
 [server]
 # API server configuration
 host = "127.0.0.1"
@@ -175,11 +171,9 @@ max_retries = config.spider.max_retries
 redis_host = config.redis.host
 redis_port = config.redis.port
 queue_name = config.redis.queue_name
-max_concurrent = config.concurrency.max_concurrent_requests
 
 # Modify configuration at runtime
 config.spider.timeout = 60
-config.concurrency.max_concurrent_requests = 20
 ```
 
 ### Command Line Arguments
@@ -188,7 +182,7 @@ config.concurrency.max_concurrent_requests = 20
 # API server arguments
 python cmd/server.py --port 8080 --host 0.0.0.0
 python cmd/server.py --reload --log-level DEBUG
-python cmd/server.py --timeout 60 --max-requests 20
+python cmd/server.py --workers 4  # Production mode with 4 workers
 
 # RQ worker arguments
 python cmd/crawl.py

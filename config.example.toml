@@ -14,10 +14,6 @@ db = 0              # Redis database number
 password = ""       # Redis password (leave empty if no password)
 queue_name = "web_craft_tasks"  # RQ queue name
 
-[concurrency]
-# Concurrency control configuration
-max_concurrent_requests = 10  # Maximum concurrent requests
-
 [server]
 # API server configuration
 host = "127.0.0.1"  # Server host address
