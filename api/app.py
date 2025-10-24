@@ -24,13 +24,11 @@ app = FastAPI(
     
     * **Single URL Crawling** - Fast crawling of individual web pages
     * **Custom Data Extraction** - Users have full control over data extraction logic in parse methods
-    * **Task Status Tracking** - Real-time monitoring of crawling progress
     * **Console Output** - Crawling results output directly to console
     
     ## Quick Start
     
-    1. Use `/crawl/single` to crawl a single web page
-    2. Use `/task/{task_id}/status` to query task status
+    1. Use `/crawl/single` to crawl a single web page and get results immediately
     
     ## Usage Instructions
     

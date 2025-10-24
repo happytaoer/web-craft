@@ -10,7 +10,7 @@ from fastapi import APIRouter
 
 from api.models import (
     SpiderTaskRequest, SpiderResponse,
-    TaskInfo, ApiResponse, HealthCheck
+    ApiResponse, HealthCheck
 )
 from api.spider_service import SpiderService
 
@@ -91,7 +91,7 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
     - **timeout**: Timeout duration
     - **max_retries**: Maximum retry count
     
-    Returns task ID, can query task status via /task/{task_id}/status
+    Returns crawling results immediately with task ID for reference.
     """
     try:
         result: SpiderResponse = await spider_service.crawl_single(request)
@@ -107,36 +107,6 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
             success=False,
             message=f"Crawling exception: {str(e)}",
             error_code="CRAWL_ERROR"
-        )
-
-@router.get("/task/{task_id}/status", response_model=ApiResponse, summary="Query Task Status")
-async def get_task_status(task_id: str) -> ApiResponse:
-    """
-    Query task status
-    
-    - **task_id**: Task ID
-    """
-    try:
-        task_info: TaskInfo = spider_service.get_task_status(task_id)
-        
-        if not task_info:
-            return create_api_response(
-                success=False,
-                message="Task does not exist",
-                error_code="TASK_NOT_FOUND"
-            )
-        
-        return create_api_response(
-            success=True,
-            message="Task status retrieved successfully",
-            data=task_info.model_dump()
-        )
-        
-    except Exception as e:
-        return create_api_response(
-            success=False,
-            message=f"Failed to query task status: {str(e)}",
-            error_code="TASK_STATUS_ERROR"
         )
 
 
