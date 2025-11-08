@@ -1,7 +1,7 @@
 """
 Spider Service Class - Integrates API with RQ Task Queue
 """
-
+from typing import Dict
 from tasks.queue import get_task_queue
 from tasks.worker_tasks import execute_spider_task
 from spiders.core.spider_loader import SpiderLoader
@@ -51,7 +51,7 @@ class SpiderService:
                 error_message=f"Task creation failed: {str(e)}"
             )
     
-    def get_available_spiders(self) -> dict[str, str]:
+    def get_available_spiders(self) -> Dict[str, str]:
         """Get list of available spiders"""
         return self.spider_loader.list_spiders()
     
