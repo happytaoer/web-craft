@@ -51,7 +51,7 @@ class SpiderService:
                 error_message=f"Task creation failed: {str(e)}"
             )
     
-    def get_available_spiders(self) -> Dict[str, str]:
+    def get_available_spiders(self) -> dict[str, str]:
         """Get list of available spiders"""
         return self.spider_loader.list_spiders()
     
