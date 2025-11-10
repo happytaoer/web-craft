@@ -34,6 +34,9 @@ class BaseSpider(ABC):
     # Default start URL - subclasses should override this
     start_url = None
     
+    # Default HTTP method - subclasses can override this
+    method = "GET"
+    
     def __init__(self):
         """Initialize spider"""
         self.spider_engine = SpiderEngine()
@@ -61,10 +64,14 @@ class BaseSpider(ABC):
         Returns:
             Crawl result
         """
-        # Use spider's start_url
+        # Use spider's start_url and method
         if not self.start_url:
             raise ValueError(f"Spider '{self.name}' has no start_url configured")
         request.url = self.start_url
+        
+        # Set HTTP method from spider configuration
+        from api.models import HttpMethod
+        request.method = HttpMethod(self.method)
         
         # Request pre-processing
         processed_request = self.pre_request(request)

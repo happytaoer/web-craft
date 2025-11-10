@@ -30,7 +30,6 @@ class SpiderService:
             job = self.task_queue.enqueue_task(
                 execute_spider_task,
                 spider_name=request.spider_name,
-                method=request.method.value,
                 timeout=request.timeout
             )
             
