@@ -37,13 +37,7 @@ class HackerNewsSpider(BaseSpider):
             tree = html.fromstring(raw_content)
             
             data = {}
-            
-            # Extract page title
-            title_xpath = '//title/text()'
-            title = tree.xpath(title_xpath)
-            if title:
-                data['page_title'] = title[0]
-            
+
             # Extract user information from header
             user_info = {}
             username_xpath = '//a[@id="me"]/text()'
@@ -134,19 +128,7 @@ class HackerNewsSpider(BaseSpider):
             
             data['news_items'] = news_items
             data['total_items'] = len(news_items)
-            
-            # Extract footer information
-            footer_info = {}
-            
-            # Extract YC application notice
-            yc_notice_xpath = '//center/a[contains(@href, "ycombinator.com/apply")]/text()'
-            yc_notice = tree.xpath(yc_notice_xpath)
-            if yc_notice:
-                footer_info['yc_notice'] = yc_notice[0]
-            
-            if footer_info:
-                data['footer_info'] = footer_info
-            
+        
             return data
             
         except Exception as e:
