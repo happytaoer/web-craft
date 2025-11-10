@@ -10,18 +10,16 @@ from output.data_exporter import DataExporter
 
 def execute_spider_task(
     spider_name: str = "default",
-    method: str = "GET",
     timeout: int = 30
 ) -> Dict[str, Any]:
     """
     Execute spider crawling task
     
     This function is executed by RQ workers and runs synchronously.
-    URL is configured in the spider's start_url attribute.
+    URL and HTTP method are configured in the spider's start_url and method attributes.
     
     Args:
         spider_name: Spider module name
-        method: HTTP method
         timeout: Request timeout
         
     Returns:
@@ -40,10 +38,9 @@ def execute_spider_task(
         
         print(f"   Using spider: {spider.__class__.__name__}")
         
-        # Create spider request (URL comes from spider's start_url)
+        # Create spider request (URL and method come from spider configuration)
         spider_request = SpiderTaskRequest(
             spider_name=spider_name,
-            method=method,
             timeout=timeout
         )
         

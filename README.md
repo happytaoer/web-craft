@@ -101,7 +101,7 @@ python cmd/crawl.py  # Worker 3
 ### 2. Use API for Crawling
 
 ```bash
-# Single URL crawling (URL is configured in spider class)
+# Single URL crawling
 curl -X POST "http://127.0.0.1:8080/api/v1/crawl/single" \
   -H "Content-Type: application/json" \
   -d '{"spider_name": "ipspider", "timeout": 15}'
@@ -205,8 +205,9 @@ from spiders.core.base_spider import BaseSpider
 from lxml import html
 
 class MySpider(BaseSpider):
-    # Configure the target URL in spider class
+    # Configure the target URL and HTTP method in spider class
     start_url = "https://example.com"
+    method = "GET"  # Optional, defaults to GET
     
     def parse(self, raw_content: str, url: str, headers: dict) -> dict:
         # Use lxml, BeautifulSoup or other tools for parsing
@@ -223,7 +224,8 @@ class MySpider(BaseSpider):
 
 **Key Points:**
 - Set `start_url` as a class attribute to define the target URL
-- No need to pass URL in API requests - it's configured in the spider
+- Set `method` to specify HTTP method (defaults to "GET")
+- No need to pass URL or method in API requests - they're configured in the spider
 - Focus on implementing the `parse()` method for data extraction
 
 **Real-world Examples:**
@@ -268,10 +270,10 @@ class HackerNewsSpider(BaseSpider):
 A: **Web-Craft's simple and clean interface design makes it ideal for AI code generation:**
 
 🤖 **Minimal Interface Requirements**:
-- Only need to set `start_url` and implement the `parse()` method
+- Only need to set `start_url` (and optionally `method`) and implement the `parse()` method
 - Simple method signature: `parse(raw_content: str, url: str, headers: dict) -> dict`
 - No complex inheritance chains or framework-specific patterns
-- URL configuration is declarative and clear
+- All configuration is declarative and clear - no runtime parameters needed
 
 🎯 **AI-Friendly Design**:
 ```python

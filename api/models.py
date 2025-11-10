@@ -19,13 +19,13 @@ class HttpMethod(str, Enum):
 class SpiderTaskRequest(BaseModel):
     """Spider task request model"""
     spider_name: str = Field(default="default", description="Spider module name")
-    method: HttpMethod = Field(default=HttpMethod.GET, description="HTTP request method")
     params: Optional[Dict[str, Any]] = Field(default=None, description="URL parameters")
     data: Optional[Dict[str, Any]] = Field(default=None, description="POST data")
     timeout: int = Field(default=30, ge=1, le=300, description="Request timeout (seconds)")
     
-    # Internal field set by spider, not from request
+    # Internal fields set by spider, not from request
     url: Optional[str] = None
+    method: HttpMethod = HttpMethod.GET
 
 class SpiderResponse(BaseModel):
     """Spider response data model"""
