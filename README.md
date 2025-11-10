@@ -57,7 +57,8 @@ web-craft/
 │   │   └── spider_loader.py # Spider Loader
 │   └── spiders/           # User Custom Spiders
 │       ├── default.py     # Default General Spider
-│       └── ip.py          # IP Address Spider
+│       ├── ip.py          # IP Address Spider
+│       └── hackernews.py  # Hacker News Spider
 ├── tests/                  # Test Suite
 ├── config.py               # Configuration Module
 ├── config.toml             # Configuration File (user-specific, not in git)
@@ -100,17 +101,25 @@ python cmd/crawl.py  # Worker 3
 ### 2. Use API for Crawling
 
 ```bash
-# Single URL crawling
+# Single URL crawling (URL is configured in spider class)
 curl -X POST "http://127.0.0.1:8080/api/v1/crawl/single" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com", "spider_name": "default"}'
+  -d '{"spider_name": "ipspider", "timeout": 15}'
+
+# Or use Hacker News spider
+curl -X POST "http://127.0.0.1:8080/api/v1/crawl/single" \
+  -H "Content-Type: application/json" \
+  -d '{"spider_name": "hackernewsspider", "timeout": 20}'
 ```
 
 ### 3. Run Tests
 
 ```bash
-# Verify system functionality
+# Test IP spider
 python -m tests.test_ip_crawl
+
+# Test Hacker News spider
+python -m tests.test_hackernews
 ```
 
 ## 🔧 Configuration Options
@@ -190,42 +199,92 @@ After starting the API service, visit the following URLs to view documentation:
 ## 🔧 FAQ
 
 ### Q: How to create custom spiders?
-A: Inherit from BaseSpider class and implement the parse method with full control over data extraction logic:
+A: Inherit from BaseSpider class, configure the target URL, and implement the parse method:
 ```python
-from spiders.base_spider import BaseSpider
-from bs4 import BeautifulSoup
+from spiders.core.base_spider import BaseSpider
+from lxml import html
 
 class MySpider(BaseSpider):
+    # Configure the target URL in spider class
+    start_url = "https://example.com"
+    
     def parse(self, raw_content: str, url: str, headers: dict) -> dict:
-        # Use BeautifulSoup or other tools for parsing
-        soup = BeautifulSoup(raw_content, 'html.parser')
+        # Use lxml, BeautifulSoup or other tools for parsing
+        tree = html.fromstring(raw_content)
         
-        # Completely custom data extraction logic
+        # Completely custom data extraction logic using XPath
         return {
-            "title": soup.find('title').get_text() if soup.find('title') else '',
-            "headings": [h.get_text() for h in soup.find_all(['h1', 'h2'])],
-            "links": [a.get('href') for a in soup.find_all('a', href=True)],
+            "title": tree.xpath('//title/text()')[0] if tree.xpath('//title/text()') else '',
+            "headings": tree.xpath('//h1/text() | //h2/text()'),
+            "links": tree.xpath('//a/@href'),
             "custom_field": "your custom extraction logic here"
         }
+```
+
+**Key Points:**
+- Set `start_url` as a class attribute to define the target URL
+- No need to pass URL in API requests - it's configured in the spider
+- Focus on implementing the `parse()` method for data extraction
+
+**Real-world Examples:**
+
+See `spiders/spiders/ip.py` for IP address extraction:
+```python
+class IpSpider(BaseSpider):
+    start_url = "https://ip.me"
+    
+    def parse(self, raw_content: str, url: str, headers: dict) -> dict:
+        tree = html.fromstring(raw_content)
+        return {
+            'ip_address': tree.xpath('//input[@name="ip"]/@value')[0],
+            'location': {
+                'city': tree.xpath('//th[text()="City:"]/following-sibling::td/code/text()')[0],
+                'country': tree.xpath('//th[text()="Country:"]/following-sibling::td/code/text()')[0]
+            }
+        }
+```
+
+See `spiders/spiders/hackernews.py` for Hacker News scraping:
+```python
+class HackerNewsSpider(BaseSpider):
+    start_url = "https://news.ycombinator.com"
+    
+    def parse(self, raw_content: str, url: str, headers: dict) -> dict:
+        tree = html.fromstring(raw_content)
+        news_items = []
+        
+        for story in tree.xpath('//tr[@class="athing submission"]'):
+            item = {
+                'rank': int(story.xpath('.//span[@class="rank"]/text()')[0].rstrip('.')),
+                'title': story.xpath('.//span[@class="titleline"]/a[1]/text()')[0],
+                'url': story.xpath('.//span[@class="titleline"]/a[1]/@href')[0]
+            }
+            news_items.append(item)
+        
+        return {'news_items': news_items, 'total_items': len(news_items)}
 ```
 
 ### Q: Why is Web-Craft perfect for AI-assisted development?
 A: **Web-Craft's simple and clean interface design makes it ideal for AI code generation:**
 
 🤖 **Minimal Interface Requirements**:
-- Only need to implement the `parse()` method in most cases
+- Only need to set `start_url` and implement the `parse()` method
 - Simple method signature: `parse(raw_content: str, url: str, headers: dict) -> dict`
 - No complex inheritance chains or framework-specific patterns
+- URL configuration is declarative and clear
 
 🎯 **AI-Friendly Design**:
 ```python
 # AI can easily generate spiders like this:
 class AIGeneratedSpider(BaseSpider):
+    # Clear URL configuration
+    start_url = "https://target-site.com"
+    
     def parse(self, raw_content: str, url: str, headers: dict) -> dict:
         # AI can focus purely on data extraction logic
         # No need to understand complex framework internals
-        soup = BeautifulSoup(raw_content, 'html.parser')
-        return {"data": "extracted by AI"}
+        tree = html.fromstring(raw_content)
+        return {"data": tree.xpath('//div[@class="content"]/text()')}
 ```
 
 🚀 **Perfect for AI Prompts**:

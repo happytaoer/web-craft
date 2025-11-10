@@ -17,6 +17,9 @@ class IpSpider(BaseSpider):
     - Latitude and longitude coordinates
     """
     
+    # Default URL for IP address lookup
+    start_url = "https://ip.me"
+    
     def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
         """
         Parse web content using XPath to extract IP address and geolocation information

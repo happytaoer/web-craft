@@ -9,7 +9,6 @@ from output.data_exporter import DataExporter
 
 
 def execute_spider_task(
-    url: str,
     spider_name: str = "default",
     method: str = "GET",
     timeout: int = 30
@@ -18,9 +17,9 @@ def execute_spider_task(
     Execute spider crawling task
     
     This function is executed by RQ workers and runs synchronously.
+    URL is configured in the spider's start_url attribute.
     
     Args:
-        url: Target URL
         spider_name: Spider module name
         method: HTTP method
         timeout: Request timeout
@@ -29,7 +28,6 @@ def execute_spider_task(
         Task execution result dictionary
     """
     print(f"🚀 Starting spider task")
-    print(f"   URL: {url}")
     print(f"   Spider: {spider_name}")
     
     start_time = time.time()
@@ -42,9 +40,8 @@ def execute_spider_task(
         
         print(f"   Using spider: {spider.__class__.__name__}")
         
-        # Create spider request
+        # Create spider request (URL comes from spider's start_url)
         spider_request = SpiderTaskRequest(
-            url=url,
             spider_name=spider_name,
             method=method,
             timeout=timeout
@@ -101,7 +98,7 @@ def execute_spider_task(
         
         return {
             'success': False,
-            'url': url,
+            'url': f"<{spider_name}>",
             'error_message': error_msg,
             'execution_time': execution_time
         }

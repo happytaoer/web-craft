@@ -19,10 +19,16 @@ class SpiderService:
     def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:
         """Create single URL crawling task and enqueue to RQ"""
         try:
+            # Get spider to retrieve its start_url for display
+            spider = self.spider_loader.get_spider(request.spider_name)
+            if not spider:
+                raise ValueError(f"Spider '{request.spider_name}' not found")
+            
+            display_url = spider.start_url or f"<{request.spider_name} no URL configured>"
+            
             # Enqueue task to RQ
             job = self.task_queue.enqueue_task(
                 execute_spider_task,
-                url=request.url,
                 spider_name=request.spider_name,
                 method=request.method.value,
                 timeout=request.timeout
@@ -30,7 +36,7 @@ class SpiderService:
             
             # Return successful task creation response
             return SpiderResponse(
-                url=request.url,
+                url=display_url,
                 status_code=202,  # Accepted
                 success=True,
                 content_length=0,
@@ -42,7 +48,7 @@ class SpiderService:
             
         except Exception as e:
             return SpiderResponse(
-                url=request.url,
+                url=f"<{request.spider_name}>",
                 status_code=500,
                 success=False,
                 content_length=0,
