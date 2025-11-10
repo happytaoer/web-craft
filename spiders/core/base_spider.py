@@ -31,6 +31,9 @@ class BaseSpider(ABC):
     All custom spiders should inherit from this class and implement necessary methods
     """
     
+    # Default start URL - subclasses should override this
+    start_url = None
+    
     def __init__(self):
         """Initialize spider"""
         self.spider_engine = SpiderEngine()
@@ -58,6 +61,11 @@ class BaseSpider(ABC):
         Returns:
             Crawl result
         """
+        # Use spider's start_url
+        if not self.start_url:
+            raise ValueError(f"Spider '{self.name}' has no start_url configured")
+        request.url = self.start_url
+        
         # Request pre-processing
         processed_request = self.pre_request(request)
         

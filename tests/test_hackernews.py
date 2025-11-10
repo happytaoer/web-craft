@@ -1,27 +1,27 @@
 """
-Single URL crawling API test
+Hacker News spider test
 """
 from .base_test import BaseTest
 
 
-class SingleCrawlTest(BaseTest):
-    """Single URL crawling test class"""
+class HackerNewsTest(BaseTest):
+    """Hacker News spider test class"""
     
-    def test_single_crawl_default(self) -> bool:
-        """Test default spider single URL crawling"""
-        self.print_test_header("Single URL crawl task creation (ipspider with default URL)", 2)
+    def test_hackernews_crawl(self) -> bool:
+        """Test Hacker News spider crawling"""
+        self.print_test_header("Hacker News spider crawl task creation", 2)
         
         try:
             data = {
-                "spider_name": "ipspider",
-                "timeout": 15
+                "spider_name": "hackernewsspider",
+                "timeout": 20
             }
             
             response = self.make_request('POST', '/crawl/single', data)
             
             if response.status_code == 200:
                 result = response.json()
-                self.print_success("Single task created successfully")
+                self.print_success("Task created successfully")
                 self.print_info("API Response", result.get('success', False))
                 self.print_info("Message", result.get('message', 'N/A'))
 
@@ -33,39 +33,40 @@ class SingleCrawlTest(BaseTest):
                     self.print_info("Success", crawl_data.get('success', False))
                 return True
             else:
-                self.print_error(f"Single task creation failed: HTTP {response.status_code}")
+                self.print_error(f"Task creation failed: HTTP {response.status_code}")
                 self.print_info("Response", response.text)
                 return False
                 
         except Exception as e:
-            self.print_error(f"Single task creation exception: {e}")
+            self.print_error(f"Task creation exception: {e}")
             return False
-    
 
 
-def test_single_crawl_default():
-    """Default spider single crawl test function"""
-    tester = SingleCrawlTest()
-    return tester.test_single_crawl_default()
+def test_hackernews_crawl():
+    """Hacker News spider test function"""
+    tester = HackerNewsTest()
+    return tester.test_hackernews_crawl()
+
 
 if __name__ == "__main__":
     from .base_test import run_test_function, print_test_summary
     
-    print("🧪 Single URL Crawling API Test")
+    print("🧪 Hacker News Spider Test")
     print("=" * 50)
     
-    # Check API server
-    tester = SingleCrawlTest()
+    # Check API health
+    tester = HackerNewsTest()
     if not tester.check_api_server():
-        print("❌ API server not running, please start the server first:")
-        print("   python cmd/server.py --port 8080")
+        print("\n❌ API server not available, exiting...")
         exit(1)
     
     print("✅ API server running normally")
     
-    # Run tests
+    print()
+    
+    # Run test
     tests = [
-        (test_single_crawl_default, "Default spider single crawl"),
+        (test_hackernews_crawl, "Hacker News spider crawl")
     ]
     
     passed = 0
@@ -75,4 +76,5 @@ if __name__ == "__main__":
         if run_test_function(test_func, test_name):
             passed += 1
     
+    # Print summary
     print_test_summary(passed, total)

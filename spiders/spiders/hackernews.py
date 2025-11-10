@@ -20,6 +20,9 @@ class HackerNewsSpider(BaseSpider):
     - Site sources
     """
     
+    # Default URL for Hacker News homepage
+    start_url = "https://news.ycombinator.com"
+    
     def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
         """
         Parse Hacker News HTML content using XPath to extract news items

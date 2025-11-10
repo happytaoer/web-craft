@@ -18,17 +18,14 @@ class HttpMethod(str, Enum):
 
 class SpiderTaskRequest(BaseModel):
     """Spider task request model"""
-    url: HttpUrl = Field(..., description="Target URL")
     spider_name: str = Field(default="default", description="Spider module name")
     method: HttpMethod = Field(default=HttpMethod.GET, description="HTTP request method")
     params: Optional[Dict[str, Any]] = Field(default=None, description="URL parameters")
     data: Optional[Dict[str, Any]] = Field(default=None, description="POST data")
     timeout: int = Field(default=30, ge=1, le=300, description="Request timeout (seconds)")
     
-    @validator('url')
-    def validate_url(cls, v: HttpUrl) -> str:
-        """Validate URL format"""
-        return str(v)
+    # Internal field set by spider, not from request
+    url: Optional[str] = None
 
 class SpiderResponse(BaseModel):
     """Spider response data model"""
