@@ -2,9 +2,8 @@
 Worker Layer - Spider Core Engine
 Responsible for executing actual web scraping and data extraction
 """
-import asyncio
 from typing import Dict, Optional
-import aiohttp
+import requests
 from fake_useragent import UserAgent
 
 from api.models import SpiderTaskRequest
@@ -33,38 +32,35 @@ class SpiderEngine:
         self.ua = UserAgent()
     
     
-    async def fetch_async(self, request: SpiderTaskRequest) -> Optional[SpiderResponse]:
-        """Asynchronous web scraping"""
+    def fetch(self, request: SpiderTaskRequest) -> Optional[SpiderResponse]:
+        """Synchronous web scraping using requests"""
         try:
-            # Prepare request parameters - use default headers
+            # Prepare request parameters
             headers = {}
             headers['User-Agent'] = self.ua.random
             
-            timeout = aiohttp.ClientTimeout(total=request.timeout)
+            response = requests.request(
+                method=request.method.value,
+                url=str(request.url),
+                headers=headers,
+                params=request.params,
+                data=request.data,
+                timeout=request.timeout
+            )
             
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.request(
-                    method=request.method.value,
-                    url=str(request.url),
-                    headers=headers,
-                    params=request.params,
-                    data=request.data
-                ) as response:
-                    content = await response.text()
+            spider_response = SpiderResponse(
+                url=response.url,
+                status_code=response.status_code,
+                content=response.text,
+                headers=dict(response.headers),
+                encoding=response.encoding or 'utf-8',
+                success=True
+            )
+            
+            return spider_response
                     
-                    spider_response = SpiderResponse(
-                        url=str(response.url),
-                        status_code=response.status,
-                        content=content,
-                        headers=dict(response.headers),
-                        encoding=response.charset or 'utf-8',
-                        success=True
-                    )
-                    
-                    return spider_response
-                    
-        except aiohttp.ClientError as e:
-            print(f"Async request failed {request.url}: {e}")
+        except requests.RequestException as e:
+            print(f"Request failed {request.url}: {e}")
             return SpiderResponse(
                 url=str(request.url),
                 status_code=0,
@@ -87,5 +83,5 @@ class SpiderEngine:
             )
     
     def close(self):
-        """Close resources (no longer needed for async-only)"""
+        """Close resources (not needed for requests)"""
         pass

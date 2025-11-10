@@ -48,7 +48,7 @@ class BaseSpider(ABC):
         """
         return request
 
-    async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResult:
+    def crawl_single(self, request: SpiderTaskRequest) -> SpiderResult:
         """
         Crawl single URL
         
@@ -65,7 +65,7 @@ class BaseSpider(ABC):
         
         try:
             # Use spider engine to execute request
-            response = await self.spider_engine.fetch_async(processed_request)
+            response = self.spider_engine.fetch(processed_request)
             
             if response and response.success:
                 # Call subclass parse method, pass in raw content

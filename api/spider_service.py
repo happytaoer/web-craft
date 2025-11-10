@@ -16,7 +16,7 @@ class SpiderService:
         self.task_queue = get_task_queue()
         self.spider_loader = SpiderLoader()
     
-    async def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:
+    def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:
         """Create single URL crawling task and enqueue to RQ"""
         try:
             # Enqueue task to RQ

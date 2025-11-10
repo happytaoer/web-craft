@@ -1,7 +1,6 @@
 """
 Worker Tasks - Functions executed by RQ workers
 """
-import asyncio
 import time
 from typing import Dict, Any
 from api.models import SpiderTaskRequest
@@ -51,8 +50,8 @@ def execute_spider_task(
             timeout=timeout
         )
         
-        # Execute crawling (run async function in sync context)
-        result = asyncio.run(spider.crawl_single(spider_request))
+        # Execute crawling
+        result = spider.crawl_single(spider_request)
         
         execution_time = time.time() - start_time
         
