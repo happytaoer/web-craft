@@ -93,7 +93,7 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
     Returns crawling results immediately with task ID for reference.
     """
     try:
-        result: SpiderResponse = await spider_service.crawl_single(request)
+        result: SpiderResponse = spider_service.crawl_single(request)
         
         return create_api_response(
             success=result.success,
