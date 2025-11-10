@@ -109,6 +109,43 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
         )
 
 
+@router.post("/crawl/debug", response_model=ApiResponse, summary="Single URL Crawling (Debug Mode)")
+async def crawl_single_debug(request: SpiderTaskRequest) -> ApiResponse:
+    """
+    Crawl single URL in debug mode (synchronous execution)
+    
+    Execute spider immediately and return the extracted data. This is useful for:
+    - Testing and debugging spiders
+    - Quick data extraction without task queue
+    - Development and prototyping
+    
+    **Note**: This endpoint executes synchronously and may take longer to respond.
+    For production use, prefer the `/crawl/single` endpoint which uses async task queue.
+    
+    - **spider_name**: Spider module name to use
+    - **timeout**: Request timeout (optional, defaults to 30 seconds)
+    - **params**: URL parameters (optional)
+    - **data**: POST data (optional)
+    
+    Returns the extracted data immediately along with crawling metadata.
+    """
+    try:
+        result: SpiderResponse = spider_service.crawl_single_debug(request)
+        
+        return create_api_response(
+            success=result.success,
+            message="Debug crawl completed" if result.success else "Debug crawl failed",
+            data=result.model_dump()
+        )
+        
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Debug crawl exception: {str(e)}",
+            error_code="DEBUG_CRAWL_ERROR"
+        )
+
+
 @router.get("/spiders", response_model=ApiResponse, summary="List Available Spiders")
 async def list_spiders() -> ApiResponse:
     """

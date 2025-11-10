@@ -56,6 +56,42 @@ class SpiderService:
                 error_message=f"Task creation failed: {str(e)}"
             )
     
+    def crawl_single_debug(self, request: SpiderTaskRequest) -> SpiderResponse:
+        """Execute spider synchronously for debugging (returns result immediately)"""
+        try:
+            # Get spider instance
+            spider = self.spider_loader.get_spider(request.spider_name)
+            if not spider:
+                raise ValueError(f"Spider '{request.spider_name}' not found")
+            
+            # Execute spider synchronously
+            result = spider.crawl_single(request)
+            
+            # Convert SpiderResult to SpiderResponse
+            return SpiderResponse(
+                url=result.url,
+                status_code=result.status_code,
+                success=result.success,
+                content_length=result.content_length,
+                encoding=result.encoding,
+                headers=result.headers,
+                response_time=result.response_time,
+                extracted_data=result.extracted_data,
+                error_message=result.error_message,
+                task_id=None  # No task ID for debug mode
+            )
+            
+        except Exception as e:
+            return SpiderResponse(
+                url=f"<{request.spider_name}>",
+                status_code=500,
+                success=False,
+                content_length=0,
+                encoding="utf-8",
+                headers={},
+                error_message=f"Debug execution failed: {str(e)}"
+            )
+    
     def get_available_spiders(self) -> Dict[str, str]:
         """Get list of available spiders"""
         return self.spider_loader.list_spiders()
