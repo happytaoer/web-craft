@@ -19,6 +19,7 @@ class SpiderResult:
     content_length: int
     encoding: str
     headers: Dict[str, str]
+    request_headers: Dict[str, str]
     response_time: float
     error_message: Optional[str] = None
     extracted_data: Optional[Dict[str, Any]] = None
@@ -98,6 +99,7 @@ class BaseSpider(ABC):
                     content_length=response.content_length,
                     encoding=response.encoding,
                     headers=response.headers,
+                    request_headers=response.request_headers,
                     response_time=time.time() - start_time,
                     extracted_data=extracted_data
                 )
@@ -112,6 +114,7 @@ class BaseSpider(ABC):
                         content_length=response.content_length,
                         encoding=response.encoding,
                         headers=response.headers,
+                        request_headers=response.request_headers,
                         response_time=time.time() - start_time,
                         error_message=response.error_message
                     )
@@ -124,6 +127,7 @@ class BaseSpider(ABC):
                         content_length=0,
                         encoding="",
                         headers={},
+                        request_headers={},
                         response_time=time.time() - start_time,
                         error_message="Request failed, no response received"
                     )
@@ -137,6 +141,7 @@ class BaseSpider(ABC):
                 content_length=0,
                 encoding="",
                 headers={},
+                request_headers={},
                 response_time=time.time() - start_time,
                 error_message=str(e)
             )

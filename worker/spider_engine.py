@@ -15,11 +15,13 @@ class SpiderResponse:
     
     def __init__(self, url: str, status_code: int, content: str, 
                  headers: Dict[str, str], encoding: str = 'utf-8', 
-                 success: bool = None, error_message: str = None):
+                 success: bool = None, error_message: str = None,
+                 request_headers: Dict[str, str] = None):
         self.url = url
         self.status_code = status_code
         self.content = content
         self.headers = headers
+        self.request_headers = request_headers or {}
         self.encoding = encoding
         self.success = success if success is not None else (200 <= status_code < 400)
         self.error_message = error_message
@@ -54,7 +56,8 @@ class SpiderEngine:
                 content=response.text,
                 headers=dict(response.headers),
                 encoding=response.encoding or 'utf-8',
-                success=True
+                success=True,
+                request_headers=headers
             )
             
             return spider_response

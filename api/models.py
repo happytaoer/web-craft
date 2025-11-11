@@ -35,6 +35,7 @@ class SpiderResponse(BaseModel):
     content_length: int = Field(default=0, description="Content length")
     encoding: str = Field(default="utf-8", description="Encoding format")
     headers: Dict[str, str] = Field(default_factory=dict, description="Response headers")
+    request_headers: Dict[str, str] = Field(default_factory=dict, description="Request headers")
     response_time: float = Field(default=0.0, description="Response time (seconds)")
     extracted_data: Optional[Dict[str, Any]] = Field(default=None, description="Extracted data")
     error_message: Optional[str] = Field(default=None, description="Error message")
