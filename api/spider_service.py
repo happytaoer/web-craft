@@ -75,6 +75,7 @@ class SpiderService:
                 content_length=result.content_length,
                 encoding=result.encoding,
                 headers=result.headers,
+                request_headers=result.request_headers,
                 response_time=result.response_time,
                 extracted_data=result.extracted_data,
                 error_message=result.error_message,
