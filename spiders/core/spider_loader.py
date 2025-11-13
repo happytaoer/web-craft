@@ -97,18 +97,6 @@ class SpiderLoader:
         """
         return {name: cls.__name__ for name, cls in self._spiders.items()}
     
-    def spider_exists(self, name: str) -> bool:
-        """
-        Check if spider exists
-        
-        Args:
-            name: Spider name
-            
-        Returns:
-            Whether it exists
-        """
-        return name in self._spiders
-    
     def reload_spiders(self):
         """Reload all spiders"""
         self._spiders.clear()
