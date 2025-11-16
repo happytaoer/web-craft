@@ -3,10 +3,12 @@
 A Python-based modular web scraping framework focused on efficient single URL crawling, supporting asynchronous processing, API services, and highly customizable spider modules.
 
 ## 📸 Screenshot
+![Web-Craft API Screenshot](screenshot.png)
 
-![Web-Craft Screenshot](screenshot.png)
+This backend pairs with the **Web-Craft-UI** for real-time spider management and health monitoring. Clone the UI repo here: [https://github.com/happytaoer/web-craft-ui](https://github.com/happytaoer/web-craft-ui)
 
-*Web-Craft API interface and system overview*
+
+![Web-Craft Dashboard UI](screenshot-ui.png)
 
 ## 📦 Quick Installation
 
