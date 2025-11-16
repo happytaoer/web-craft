@@ -129,7 +129,7 @@ class SpiderService:
                 f.write(spider_code)
             
             # Reload spider loader to include new spider
-            self.spider_loader = SpiderLoader()
+            self.spider_loader.reload_spiders()
             
             return CreateSpiderResponse(
                 spider_name=spider_name,
@@ -178,7 +178,7 @@ class SpiderService:
             file_path.unlink()
             
             # Reload spider loader to update spider list
-            self.spider_loader = SpiderLoader()
+            self.spider_loader.reload_spiders()
             
             return DeleteSpiderResponse(
                 spider_name=spider_name,
@@ -255,7 +255,7 @@ class SpiderService:
                 f.write(spider_code)
             
             # Reload spider loader to update spider
-            self.spider_loader = SpiderLoader()
+            self.spider_loader.reload_spiders()
             
             return EditSpiderResponse(
                 spider_name=spider_name,
