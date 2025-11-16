@@ -149,6 +149,11 @@ class SpiderService:
                 "Invalid spider name format"
             )
         
+        # Check if spider exists in loader
+        spider_class = self.spider_loader._spiders.get(spider_name)
+        if not spider_class:
+            raise ValueError(f"Spider '{spider_name}' not found")
+        
         # Prevent deletion of default spiders
         protected_spiders = ['default', 'ip', 'hackernews']
         if spider_name in protected_spiders:
@@ -159,13 +164,14 @@ class SpiderService:
         if not spiders_dir.exists():
             raise ValueError(f"Spiders directory not found: {spiders_dir}")
         
-        # Create file path
-        file_name = f"{spider_name}.py"
+        # Find the actual file by searching for the spider class module
+        module_name = spider_class.__module__.split('.')[-1]  # Get module name from class
+        file_name = f"{module_name}.py"
         file_path = spiders_dir / file_name
         
         # Check if file exists
         if not file_path.exists():
-            raise ValueError(f"Spider '{spider_name}' not found")
+            raise ValueError(f"Spider file '{file_name}' not found")
         
         # Delete the file
         try:
@@ -187,18 +193,24 @@ class SpiderService:
         if not spider_name or not re.match(r'^[a-z][a-z0-9_]*$', spider_name):
             raise ValueError("Invalid spider name format")
         
+        # Check if spider exists in loader
+        spider_class = self.spider_loader._spiders.get(spider_name)
+        if not spider_class:
+            raise ValueError(f"Spider '{spider_name}' not found")
+        
         # Get spiders directory path
         spiders_dir = Path(__file__).parent.parent / "spiders" / "spiders"
         if not spiders_dir.exists():
             raise ValueError(f"Spiders directory not found: {spiders_dir}")
         
-        # Create file path
-        file_name = f"{spider_name}.py"
+        # Find the actual file by searching for the spider class module
+        module_name = spider_class.__module__.split('.')[-1]
+        file_name = f"{module_name}.py"
         file_path = spiders_dir / file_name
         
         # Check if file exists
         if not file_path.exists():
-            raise ValueError(f"Spider '{spider_name}' not found")
+            raise ValueError(f"Spider file '{file_name}' not found")
         
         # Read spider code
         try:
@@ -218,18 +230,24 @@ class SpiderService:
         if not spider_name or not re.match(r'^[a-z][a-z0-9_]*$', spider_name):
             raise ValueError("Invalid spider name format")
         
+        # Check if spider exists in loader
+        spider_class = self.spider_loader._spiders.get(spider_name)
+        if not spider_class:
+            raise ValueError(f"Spider '{spider_name}' not found")
+        
         # Get spiders directory path
         spiders_dir = Path(__file__).parent.parent / "spiders" / "spiders"
         if not spiders_dir.exists():
             raise ValueError(f"Spiders directory not found: {spiders_dir}")
         
-        # Create file path
-        file_name = f"{spider_name}.py"
+        # Find the actual file by searching for the spider class module
+        module_name = spider_class.__module__.split('.')[-1]
+        file_name = f"{module_name}.py"
         file_path = spiders_dir / file_name
         
         # Check if file exists
         if not file_path.exists():
-            raise ValueError(f"Spider '{spider_name}' not found")
+            raise ValueError(f"Spider file '{file_name}' not found")
         
         # Write updated spider code to file
         try:
