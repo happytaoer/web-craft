@@ -81,8 +81,7 @@ class SpiderLoader:
             Spider instance, returns None if not exists
         """
         if name not in self._spiders:
-            print(f"Warning: Spider '{name}' not found, using default spider")
-            name = 'default'
+            return None
         
         # Use singleton pattern to avoid duplicate instance creation
         if name not in self._spider_instances:
