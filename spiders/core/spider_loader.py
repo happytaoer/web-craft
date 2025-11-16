@@ -2,6 +2,7 @@
 Spider Loader - Dynamically load and manage spider modules
 """
 import importlib
+import sys
 from typing import Dict, Type, Optional
 from pathlib import Path
 
@@ -34,10 +35,13 @@ class SpiderLoader:
                 continue
             
             module_name = file_path.stem
+            full_module_name = f'spiders.spiders.{module_name}'
             try:
-                # Dynamically import module from spiders.spiders package
-                module = importlib.import_module(f'spiders.spiders.{module_name}')
-                
+                if full_module_name in sys.modules:
+                    module = importlib.reload(sys.modules[full_module_name])
+                else:
+                    module = importlib.import_module(full_module_name)
+
                 # Find classes that inherit from BaseSpider
                 for attr_name in dir(module):
                     attr = getattr(module, attr_name)
