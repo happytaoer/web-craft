@@ -20,6 +20,8 @@ class HackerNewsSpider(BaseSpider):
     - Site sources
     """
     
+    name = "hackernews"
+    
     # Default URL for Hacker News homepage
     start_url = "https://news.ycombinator.com"
     

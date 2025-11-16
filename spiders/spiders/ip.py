@@ -17,6 +17,8 @@ class IpSpider(BaseSpider):
     - Latitude and longitude coordinates
     """
     
+    name = "ip"
+    
     # Default URL for IP address lookup
     start_url = "https://ip.me"
     
