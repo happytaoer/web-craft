@@ -10,7 +10,10 @@ from fastapi import APIRouter
 
 from api.models import (
     SpiderTaskRequest, SpiderResponse,
-    ApiResponse, HealthCheck
+    ApiResponse, HealthCheck,
+    CreateSpiderRequest, CreateSpiderResponse,
+    DeleteSpiderRequest, DeleteSpiderResponse,
+    GetSpiderCodeResponse, EditSpiderRequest, EditSpiderResponse
 )
 from api.spider_service import SpiderService
 
@@ -170,6 +173,156 @@ async def list_spiders() -> ApiResponse:
             success=False,
             message=f"Failed to retrieve spiders: {str(e)}",
             error_code="SPIDERS_LIST_ERROR"
+        )
+
+
+@router.post("/spiders/create", response_model=ApiResponse, summary="Create New Spider")
+async def create_spider(request: CreateSpiderRequest) -> ApiResponse:
+    """
+    Create a new spider
+    
+    Create a new spider file in the spiders directory with the provided code.
+    
+    - **spider_name**: Name of the spider (will be used as filename)
+    - **spider_code**: Complete Python code for the spider
+    
+    Returns the created spider information including file path.
+    """
+    try:
+        result: CreateSpiderResponse = spider_service.create_spider(
+            spider_name=request.spider_name,
+            spider_code=request.spider_code
+        )
+        
+        return create_api_response(
+            success=True,
+            message=result.message,
+            data=result.model_dump()
+        )
+        
+    except ValueError as e:
+        return create_api_response(
+            success=False,
+            message=str(e),
+            error_code="INVALID_SPIDER_NAME"
+        )
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Failed to create spider: {str(e)}",
+            error_code="SPIDER_CREATION_ERROR"
+        )
+
+
+@router.get("/spiders/{spider_name}/code", response_model=ApiResponse, summary="Get Spider Code")
+async def get_spider_code(spider_name: str) -> ApiResponse:
+    """
+    Get spider code
+    
+    Retrieve the Python code of a spider.
+    
+    - **spider_name**: Name of the spider
+    
+    Returns the spider code.
+    """
+    try:
+        result: GetSpiderCodeResponse = spider_service.get_spider_code(spider_name)
+        
+        return create_api_response(
+            success=True,
+            message="Spider code retrieved successfully",
+            data=result.model_dump()
+        )
+        
+    except ValueError as e:
+        return create_api_response(
+            success=False,
+            message=str(e),
+            error_code="INVALID_SPIDER_NAME"
+        )
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Failed to get spider code: {str(e)}",
+            error_code="SPIDER_CODE_ERROR"
+        )
+
+
+@router.put("/spiders/{spider_name}", response_model=ApiResponse, summary="Edit Spider")
+async def edit_spider(spider_name: str, request: EditSpiderRequest) -> ApiResponse:
+    """
+    Edit an existing spider
+    
+    Update the Python code of an existing spider.
+    
+    - **spider_name**: Name of the spider to edit (must match request body)
+    - **spider_code**: Updated Python code for the spider
+    
+    Returns the edit result.
+    """
+    try:
+        # Verify spider_name matches
+        if spider_name != request.spider_name:
+            raise ValueError("Spider name in URL does not match request body")
+        
+        result: EditSpiderResponse = spider_service.edit_spider(
+            spider_name=request.spider_name,
+            spider_code=request.spider_code
+        )
+        
+        return create_api_response(
+            success=True,
+            message=result.message,
+            data=result.model_dump()
+        )
+        
+    except ValueError as e:
+        return create_api_response(
+            success=False,
+            message=str(e),
+            error_code="INVALID_SPIDER_EDIT"
+        )
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Failed to edit spider: {str(e)}",
+            error_code="SPIDER_EDIT_ERROR"
+        )
+
+
+@router.delete("/spiders/{spider_name}", response_model=ApiResponse, summary="Delete Spider")
+async def delete_spider(spider_name: str) -> ApiResponse:
+    """
+    Delete a spider
+    
+    Delete a spider file from the spiders directory.
+    
+    - **spider_name**: Name of the spider to delete
+    
+    **Note**: Protected spiders (default, ip, hackernews) cannot be deleted.
+    
+    Returns the deletion result.
+    """
+    try:
+        result: DeleteSpiderResponse = spider_service.delete_spider(spider_name)
+        
+        return create_api_response(
+            success=True,
+            message=result.message,
+            data=result.model_dump()
+        )
+        
+    except ValueError as e:
+        return create_api_response(
+            success=False,
+            message=str(e),
+            error_code="INVALID_SPIDER_DELETE"
+        )
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Failed to delete spider: {str(e)}",
+            error_code="SPIDER_DELETION_ERROR"
         )
 
 

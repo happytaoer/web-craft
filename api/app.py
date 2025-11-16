@@ -55,8 +55,8 @@ app = FastAPI(
     """,
     version="1.0.0",
     contact={
-        "name": "Web-Craft Team",
-        "email": "support@webcraft.com",
+        "name": "Tao Jiang",
+        "email": "ximotao@hotmail.com",
     },
     license_info={
         "name": "MIT License",

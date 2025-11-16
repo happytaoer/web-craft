@@ -57,3 +57,44 @@ class HealthCheck(BaseModel):
     version: str = Field(..., description="Version number")
     uptime: float = Field(..., description="Uptime (seconds)")
     system_info: Dict[str, Any] = Field(..., description="System information")
+
+
+class CreateSpiderRequest(BaseModel):
+    """Create spider request model"""
+    spider_name: str = Field(..., description="Spider name (will be used as filename)")
+    spider_code: str = Field(..., description="Complete Python spider code")
+
+
+class CreateSpiderResponse(BaseModel):
+    """Create spider response model"""
+    spider_name: str = Field(..., description="Created spider name")
+    message: str = Field(..., description="Creation result message")
+
+
+class DeleteSpiderRequest(BaseModel):
+    """Delete spider request model"""
+    spider_name: str = Field(..., description="Spider name to delete")
+
+
+class DeleteSpiderResponse(BaseModel):
+    """Delete spider response model"""
+    spider_name: str = Field(..., description="Deleted spider name")
+    message: str = Field(..., description="Deletion result message")
+
+
+class GetSpiderCodeResponse(BaseModel):
+    """Get spider code response model"""
+    spider_name: str = Field(..., description="Spider name")
+    spider_code: str = Field(..., description="Spider Python code")
+
+
+class EditSpiderRequest(BaseModel):
+    """Edit spider request model"""
+    spider_name: str = Field(..., description="Spider name to edit")
+    spider_code: str = Field(..., description="Updated Python spider code")
+
+
+class EditSpiderResponse(BaseModel):
+    """Edit spider response model"""
+    spider_name: str = Field(..., description="Edited spider name")
+    message: str = Field(..., description="Edit result message")
