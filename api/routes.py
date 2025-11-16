@@ -299,7 +299,7 @@ async def delete_spider(spider_name: str) -> ApiResponse:
     
     - **spider_name**: Name of the spider to delete
     
-    **Note**: Protected spiders (default, ip, hackernews) cannot be deleted.
+    **Note**: Protected spiders (ip, hackernews) cannot be deleted.
     
     Returns the deletion result.
     """

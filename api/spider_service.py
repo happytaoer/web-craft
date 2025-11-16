@@ -155,7 +155,7 @@ class SpiderService:
             raise ValueError(f"Spider '{spider_name}' not found")
         
         # Prevent deletion of default spiders
-        protected_spiders = ['default', 'ip', 'hackernews']
+        protected_spiders = ['ip', 'hackernews']
         if spider_name in protected_spiders:
             raise ValueError(f"Cannot delete protected spider '{spider_name}'")
         
