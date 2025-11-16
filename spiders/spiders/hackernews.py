@@ -3,7 +3,7 @@ Hacker News Spider - Specialized for extracting news items from Hacker News
 """
 from typing import Dict, Any, List
 from lxml import html
-from ..core.base_spider import BaseSpider
+from spiders.core.base_spider import BaseSpider
 
 
 class HackerNewsSpider(BaseSpider):
