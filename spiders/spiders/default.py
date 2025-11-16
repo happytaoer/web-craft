@@ -10,6 +10,8 @@ class DefaultSpider(BaseSpider):
     Default spider implementation
     """
     
+    name = "default"
+    
     def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
         """
         Parse web page content and extract basic information

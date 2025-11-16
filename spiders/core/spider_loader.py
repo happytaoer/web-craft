@@ -45,9 +45,12 @@ class SpiderLoader:
                         issubclass(attr, BaseSpider) and 
                         attr != BaseSpider):
                         
-                        # Generate spider name
-                        spider_instance = attr()
-                        spider_name = spider_instance.name 
+                        # Get spider name from class field
+                        spider_name = attr.name
+
+                        if spider_name is None:
+                            raise ValueError(f"Spider class {spider_class.__name__} name filed can't be None")
+
                         if spider_name and spider_name not in self._spiders:
                             self.register_spider(spider_name, attr)
                             
