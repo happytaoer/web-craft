@@ -3,7 +3,7 @@ Spider Loader - Dynamically load and manage spider modules
 """
 import importlib
 import sys
-from typing import Dict, Type, Optional
+from typing import Dict, Type, Optional, List
 from pathlib import Path
 
 from .base_spider import BaseSpider
@@ -94,14 +94,14 @@ class SpiderLoader:
         
         return self._spider_instances[name]
     
-    def list_spiders(self) -> Dict[str, str]:
+    def list_spiders(self) -> List[str]:
         """
         List all available spiders
         
         Returns:
             Mapping from spider names to class names
         """
-        return {name: cls.__name__ for name, cls in self._spiders.items()}
+        return [name for name in self._spiders]
     
     def reload_spiders(self):
         """Reload all spiders"""
