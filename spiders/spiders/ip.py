@@ -3,7 +3,7 @@ IP Address Spider - Specialized for extracting IP addresses and geolocation info
 """
 from typing import Dict, Any
 from lxml import html
-from ..core.base_spider import BaseSpider
+from spiders.core.base_spider import BaseSpider
 
 
 class IpSpider(BaseSpider):
