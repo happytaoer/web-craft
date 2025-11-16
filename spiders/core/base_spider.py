@@ -32,6 +32,9 @@ class BaseSpider(ABC):
     All custom spiders should inherit from this class and implement necessary methods
     """
     
+    # Spider name - subclasses should override this
+    name = None
+    
     # Default start URL - subclasses should override this
     start_url = None
     
@@ -41,7 +44,6 @@ class BaseSpider(ABC):
     def __init__(self):
         """Initialize spider"""
         self.spider_engine = SpiderEngine()
-        self.name = self.__class__.__name__.lower()
     
     def pre_request(self, request: SpiderTaskRequest) -> SpiderTaskRequest:
         """
