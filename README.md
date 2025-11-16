@@ -56,7 +56,6 @@ web-craft/
 │   │   ├── base_spider.py # Base Spider Abstract Class
 │   │   └── spider_loader.py # Spider Loader
 │   └── spiders/           # User Custom Spiders
-│       ├── default.py     # Default General Spider
 │       ├── ip.py          # IP Address Spider
 │       └── hackernews.py  # Hacker News Spider
 ├── tests/                  # Test Suite
