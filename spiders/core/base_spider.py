@@ -25,6 +25,17 @@ class SpiderResult:
     extracted_data: Optional[Dict[str, Any]] = None
 
 
+@dataclass
+class ParseContext:
+    """Context object carrying request/response metadata into parse stage"""
+    request: SpiderTaskRequest
+    url: str
+    headers: Dict[str, str]
+    status_code: int
+    response_time: float
+    metadata: Dict[str, Any]
+
+
 class BaseSpider(ABC):
     """
     Base spider abstract class
@@ -86,11 +97,22 @@ class BaseSpider(ABC):
             response = self.spider_engine.fetch(processed_request)
             
             if response and response.success:
-                # Call subclass parse method, pass in raw content
+                # Build parse context for downstream parsing logic
+                parse_context = ParseContext(
+                    request=processed_request,
+                    url=response.url,
+                    headers=response.headers,
+                    status_code=response.status_code,
+                    response_time=time.time() - start_time,
+                    metadata={
+                        "method": processed_request.method.value,
+                    }
+                )
+
+                # Call subclass parse method, pass in raw content + context
                 extracted_data = self.parse(
                     raw_content=response.content,
-                    url=response.url,
-                    headers=response.headers
+                    context=parse_context,
                 )
                 
                 result = SpiderResult(
@@ -152,14 +174,13 @@ class BaseSpider(ABC):
         return self.post_process(result)
     
     @abstractmethod
-    def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
+    def parse(self, raw_content: str, context: ParseContext) -> Dict[str, Any]:
         """
         Parse response content and extract data
         
         Args:
             raw_content: Raw HTML/text content
-            url: Requested URL
-            headers: Response header information
+            context: Request/response metadata for the current crawl
             
         Returns:
             Extracted data dictionary

@@ -3,7 +3,7 @@ IP Address Spider - Specialized for extracting IP addresses and geolocation info
 """
 from typing import Dict, Any
 from lxml import html
-from spiders.core.base_spider import BaseSpider
+from spiders.core.base_spider import BaseSpider, ParseContext
 
 
 class IpSpider(BaseSpider):
@@ -22,14 +22,13 @@ class IpSpider(BaseSpider):
     # Default URL for IP address lookup
     start_url = "https://ip.me"
     
-    def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
+    def parse(self, raw_content: str, context: ParseContext) -> Dict[str, Any]:
         """
         Parse web content using XPath to extract IP address and geolocation information
         
         Args:
             raw_content: Raw HTML/text content
-            url: Requested URL
-            headers: Response headers
+            context: Request/response metadata
             
         Returns:
             Dictionary of extracted IP address and geolocation data
