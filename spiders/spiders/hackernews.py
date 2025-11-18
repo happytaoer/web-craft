@@ -3,7 +3,7 @@ Hacker News Spider - Specialized for extracting news items from Hacker News
 """
 from typing import Dict, Any, List
 from lxml import html
-from spiders.core.base_spider import BaseSpider
+from spiders.core.base_spider import BaseSpider, ParseContext
 
 
 class HackerNewsSpider(BaseSpider):
@@ -25,14 +25,13 @@ class HackerNewsSpider(BaseSpider):
     # Default URL for Hacker News homepage
     start_url = "https://news.ycombinator.com"
     
-    def parse(self, raw_content: str, url: str, headers: Dict[str, str]) -> Dict[str, Any]:
+    def parse(self, raw_content: str, context: ParseContext) -> Dict[str, Any]:
         """
         Parse Hacker News HTML content using XPath to extract news items
         
         Args:
             raw_content: Raw HTML content
-            url: Requested URL
-            headers: Response headers
+            context: Request/response metadata
             
         Returns:
             Dictionary containing extracted news items and metadata
