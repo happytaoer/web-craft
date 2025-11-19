@@ -5,7 +5,7 @@ import time
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
-from api.models import SpiderTaskRequest
+from api.models import SpiderTaskRequest, HttpMethod
 from worker.spider_engine import SpiderEngine
 
 
@@ -84,7 +84,6 @@ class BaseSpider(ABC):
         request.url = self.start_url
         
         # Set HTTP method from spider configuration
-        from api.models import HttpMethod
         request.method = HttpMethod(self.method)
         
         # Request pre-processing
@@ -95,6 +94,7 @@ class BaseSpider(ABC):
         try:
             # Use spider engine to execute request
             response = self.spider_engine.fetch(processed_request)
+            fetch_time = time.time() - start_time
             
             if response and response.success:
                 # Build parse context for downstream parsing logic
@@ -103,7 +103,7 @@ class BaseSpider(ABC):
                     url=response.url,
                     headers=response.headers,
                     status_code=response.status_code,
-                    response_time=time.time() - start_time,
+                    response_time=fetch_time,
                     metadata={
                         "method": processed_request.method.value,
                     }
@@ -115,6 +115,9 @@ class BaseSpider(ABC):
                     context=parse_context,
                 )
                 
+                # Calculate total time including parse
+                total_time = time.time() - start_time
+                
                 result = SpiderResult(
                     url=response.url,
                     status_code=response.status_code,
@@ -124,7 +127,7 @@ class BaseSpider(ABC):
                     encoding=response.encoding,
                     headers=response.headers,
                     request_headers=response.request_headers,
-                    response_time=time.time() - start_time,
+                    response_time=total_time,
                     extracted_data=extracted_data
                 )
             else:
@@ -139,7 +142,7 @@ class BaseSpider(ABC):
                         encoding=response.encoding,
                         headers=response.headers,
                         request_headers=response.request_headers,
-                        response_time=time.time() - start_time,
+                        response_time=fetch_time,
                         error_message=response.error_message
                     )
                 else:
@@ -152,11 +155,12 @@ class BaseSpider(ABC):
                         encoding="",
                         headers={},
                         request_headers={},
-                        response_time=time.time() - start_time,
+                        response_time=fetch_time,
                         error_message="Request failed, no response received"
                     )
                 
         except Exception as e:
+            elapsed_time = time.time() - start_time
             result = SpiderResult(
                 url=str(processed_request.url),
                 status_code=0,
@@ -166,7 +170,7 @@ class BaseSpider(ABC):
                 encoding="",
                 headers={},
                 request_headers={},
-                response_time=time.time() - start_time,
+                response_time=elapsed_time,
                 error_message=str(e)
             )
         

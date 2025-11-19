@@ -98,3 +98,11 @@ class EditSpiderResponse(BaseModel):
     """Edit spider response model"""
     spider_name: str = Field(..., description="Edited spider name")
     message: str = Field(..., description="Edit result message")
+
+
+class ValidationErrorDetail(BaseModel):
+    """Validation error detail"""
+    type: str = Field(..., description="Error type: syntax_error, import_error, structure_error, field_error")
+    message: str = Field(..., description="Error message")
+    line: Optional[int] = Field(default=None, description="Line number where error occurred")
+    detail: Optional[str] = Field(default=None, description="Additional error details")

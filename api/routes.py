@@ -201,9 +201,25 @@ async def create_spider(request: CreateSpiderRequest) -> ApiResponse:
         )
         
     except ValueError as e:
+        error_msg = str(e)
+        # Check if this is a validation error
+        if "Spider validation failed" in error_msg:
+            import ast
+            try:
+                # Extract validation errors from error message
+                error_list_str = error_msg.split("Spider validation failed: ")[1]
+                validation_errors = ast.literal_eval(error_list_str)
+                return create_api_response(
+                    success=False,
+                    message="Spider validation failed",
+                    error_code="VALIDATION_ERROR",
+                    data={"validation_errors": validation_errors}
+                )
+            except:
+                pass
         return create_api_response(
             success=False,
-            message=str(e),
+            message=error_msg,
             error_code="INVALID_SPIDER_NAME"
         )
     except Exception as e:
@@ -277,9 +293,25 @@ async def edit_spider(spider_name: str, request: EditSpiderRequest) -> ApiRespon
         )
         
     except ValueError as e:
+        error_msg = str(e)
+        # Check if this is a validation error
+        if "Spider validation failed" in error_msg:
+            import ast
+            try:
+                # Extract validation errors from error message
+                error_list_str = error_msg.split("Spider validation failed: ")[1]
+                validation_errors = ast.literal_eval(error_list_str)
+                return create_api_response(
+                    success=False,
+                    message="Spider validation failed",
+                    error_code="VALIDATION_ERROR",
+                    data={"validation_errors": validation_errors}
+                )
+            except:
+                pass
         return create_api_response(
             success=False,
-            message=str(e),
+            message=error_msg,
             error_code="INVALID_SPIDER_EDIT"
         )
     except Exception as e:
