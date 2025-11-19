@@ -8,9 +8,10 @@ from typing import Dict
 from tasks.queue import get_task_queue
 from tasks.worker_tasks import execute_spider_task
 from spiders.core.spider_loader import SpiderLoader
+from spiders.core.spider_validator import SpiderValidator
 from .models import (
     SpiderTaskRequest, SpiderResponse, CreateSpiderResponse, DeleteSpiderResponse,
-    GetSpiderCodeResponse, EditSpiderResponse
+    GetSpiderCodeResponse, EditSpiderResponse, ValidationErrorDetail
 )
 
 class SpiderService:
@@ -109,6 +110,21 @@ class SpiderService:
                 "Spider name must start with a lowercase letter and contain only "
                 "lowercase letters, numbers, and underscores"
             )
+        
+        # Validate spider code before saving
+        validation_result = SpiderValidator.validate_all(spider_code, spider_name)
+        if not validation_result.success:
+            # Convert validation errors to exception with structured data
+            error_details = [
+                {
+                    "type": err.type,
+                    "message": err.message,
+                    "line": err.line,
+                    "detail": err.detail
+                }
+                for err in validation_result.errors
+            ]
+            raise ValueError(f"Spider validation failed: {error_details}")
         
         # Get spiders directory path
         spiders_dir = Path(__file__).parent.parent / "spiders" / "spiders"
@@ -229,6 +245,21 @@ class SpiderService:
         # Validate spider name
         if not spider_name or not re.match(r'^[a-z][a-z0-9_]*$', spider_name):
             raise ValueError("Invalid spider name format")
+        
+        # Validate spider code before saving
+        validation_result = SpiderValidator.validate_all(spider_code, spider_name)
+        if not validation_result.success:
+            # Convert validation errors to exception with structured data
+            error_details = [
+                {
+                    "type": err.type,
+                    "message": err.message,
+                    "line": err.line,
+                    "detail": err.detail
+                }
+                for err in validation_result.errors
+            ]
+            raise ValueError(f"Spider validation failed: {error_details}")
         
         # Check if spider exists in loader
         spider_class = self.spider_loader._spiders.get(spider_name)
