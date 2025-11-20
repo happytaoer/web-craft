@@ -4,9 +4,10 @@ API Routes - FastAPI route definitions and request handling
 import time
 import platform
 import psutil
+import httpx
 from datetime import datetime
 from typing import Dict, Any
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from api.models import (
     SpiderTaskRequest, SpiderResponse,
@@ -355,6 +356,72 @@ async def delete_spider(spider_name: str) -> ApiResponse:
             success=False,
             message=f"Failed to delete spider: {str(e)}",
             error_code="SPIDER_DELETION_ERROR"
+        )
+
+
+@router.get("/fetch-url", response_model=ApiResponse, summary="Fetch URL Content")
+async def fetch_url(url: str) -> ApiResponse:
+    """
+    Fetch HTML content from a URL
+    
+    Args:
+        url: Target URL to fetch
+        
+    Returns:
+        ApiResponse with HTML content and metadata
+    """
+    try:
+        async with httpx.AsyncClient(
+            timeout=30.0,
+            follow_redirects=True,
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                'Accept-Encoding': 'gzip, deflate',
+                'Connection': 'keep-alive',
+            }
+        ) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            
+            html_content = response.text
+            
+            # 提取页面标题
+            import re
+            title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE)
+            title = title_match.group(1).strip() if title_match else '无标题'
+            
+            return create_api_response(
+                success=True,
+                message="URL content fetched successfully",
+                data={
+                    "url": str(response.url),
+                    "status_code": response.status_code,
+                    "title": title,
+                    "html_content": html_content,
+                    "content_length": len(html_content),
+                    "encoding": response.encoding or 'utf-8',
+                    "headers": dict(response.headers)
+                }
+            )
+    except httpx.HTTPStatusError as e:
+        return create_api_response(
+            success=False,
+            message=f"HTTP error: {e.response.status_code}",
+            error_code="HTTP_ERROR"
+        )
+    except httpx.TimeoutException:
+        return create_api_response(
+            success=False,
+            message="Request timeout",
+            error_code="TIMEOUT_ERROR"
+        )
+    except Exception as e:
+        return create_api_response(
+            success=False,
+            message=f"Failed to fetch URL: {str(e)}",
+            error_code="FETCH_ERROR"
         )
 
 
