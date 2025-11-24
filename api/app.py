@@ -150,7 +150,6 @@ async def root() -> Dict[str, str]:
 def run_server(host: str = "0.0.0.0", port: int = 8000, 
                reload: bool = False, workers: int = 1) -> None:
     """Run API server"""
-    # Remove duplicate print information, handled uniformly by cmd/server.py
     uvicorn.run(
         "api.app:app",
         host=host,

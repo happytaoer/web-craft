@@ -97,7 +97,7 @@ async def crawl_single_url(request: SpiderTaskRequest) -> ApiResponse:
     Returns crawling results immediately with task ID for reference.
     """
     try:
-        result: SpiderResponse = spider_service.crawl_single(request)
+        result: SpiderResponse = spider_service.create_crawl_task(request)
         
         return create_api_response(
             success=result.success,
@@ -387,10 +387,9 @@ async def fetch_url(url: str) -> ApiResponse:
             
             html_content = response.text
             
-            # 提取页面标题
             import re
             title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE)
-            title = title_match.group(1).strip() if title_match else '无标题'
+            title = title_match.group(1).strip() if title_match else 'No Title'
             
             return create_api_response(
                 success=True,
