@@ -21,7 +21,7 @@ class SpiderService:
         self.task_queue = get_task_queue()
         self.spider_loader = SpiderLoader()
     
-    def crawl_single(self, request: SpiderTaskRequest) -> SpiderResponse:
+    def create_crawl_task(self, request: SpiderTaskRequest) -> SpiderResponse:
         """Create single URL crawling task and enqueue to RQ"""
         try:
             # Get spider to retrieve its start_url for display
